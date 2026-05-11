@@ -1,4 +1,4 @@
-const CACHE_NAME = "CatMeals";
+const CACHE_NAME = "MySS";
 const URLS = ["", "index.html", "manifest.json"];
 
 self.addEventListener("install", (event) =>
