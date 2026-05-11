@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DailyCare - Painel Pessoal</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#162033">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
   <style>
     /* ==========================================
        1. VARIÁVEIS E RESET
@@ -46,17 +52,9 @@
     /* ==========================================
        2. ESTRUTURA E LAYOUT
        ========================================== */
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-      position: relative;
-    }
+    .header { text-align: center; margin-bottom: 20px; position: relative; }
     .header h1 { font-size: 1.75rem; font-weight: 700; }
     .header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
     
@@ -67,20 +65,27 @@
       font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
     }
 
-    /* Banner de Backup */
+    /* Banners Dinâmicos (Instalação e Backup) */
+    .install-banner, .backup-banner {
+      border-radius: 16px; padding: 12px 16px; margin-bottom: 20px;
+      display: none; justify-content: space-between; align-items: center; gap: 10px;
+    }
+    .install-banner {
+      background-color: rgba(79, 70, 229, 0.15); border: 1px solid var(--accent);
+    }
+    .install-banner span { font-size: 0.85rem; color: #a5b4fc; font-weight: 600; }
+    
     .backup-banner {
-      background-color: rgba(250, 204, 21, 0.15);
-      border: 1px solid var(--warning);
-      border-radius: 16px; padding: 12px 16px;
-      margin-bottom: 20px; display: none;
-      justify-content: space-between; align-items: center; gap: 10px;
+      background-color: rgba(250, 204, 21, 0.15); border: 1px solid var(--warning);
     }
     .backup-banner span { font-size: 0.85rem; color: var(--warning); font-weight: 600; }
+
     .btn-banner {
-      background-color: var(--warning); color: #000;
       padding: 8px 12px; border-radius: 10px;
       font-weight: 700; font-size: 0.75rem; flex-shrink: 0;
     }
+    .btn-banner-install { background-color: var(--accent); color: white; }
+    .btn-banner-backup { background-color: var(--warning); color: #000; }
 
     /* Barra de Navegação Inferior */
     .nav-bar {
@@ -125,7 +130,7 @@
       background-color: var(--accent); color: white;
       padding: 14px 20px; border-radius: 14px; font-weight: 600;
       width: 100%; font-size: 0.875rem; margin-top: 10px;
-      display: inline-block; text-align: center;
+      display: block; text-align: center;
     }
     .btn-secondary {
       background-color: var(--bg-input); border: 1px solid var(--border-color);
@@ -157,7 +162,7 @@
     .tag-urgente { background-color: rgba(239, 68, 68, 0.2); color: var(--danger); }
     .tag-aviso { background-color: rgba(245, 158, 11, 0.2); color: var(--warning); }
 
-    /* Modal de Backup */
+    /* Modal */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
@@ -180,9 +185,14 @@
       <button class="btn-settings" onclick="toggleModal(true)" title="Configurações de Backup">⚙️</button>
     </header>
 
+    <div id="install-banner" class="install-banner">
+      <span>📲 Instale o DailyCare no seu celular!</span>
+      <button class="btn-banner btn-banner-install" id="btn-install">Instalar</button>
+    </div>
+
     <div id="backup-banner" class="backup-banner">
       <span>⚠️ Já faz um tempo desde o seu último backup!</span>
-      <button class="btn-banner" onclick="exportBackup()">Baixar Dados</button>
+      <button class="btn-banner btn-banner-backup" onclick="exportBackup()">Baixar Dados</button>
     </div>
 
     <main id="view-habits" class="tab-content active">
@@ -222,7 +232,7 @@
         </div>
 
         <div class="habit-item">
-          <div><strong>💩 Funcionamento Intestinal</strong></div>
+          <div><strong>💩 Intestino</strong></div>
           <input type="checkbox" id="check-poop" style="width:22px; height:22px;" onchange="saveHabits()">
         </div>
 
@@ -327,7 +337,7 @@
       </div>
       
       <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
-        Salve seus dados com segurança em um arquivo no seu dispositivo ou restaure um backup anterior.
+        Salve seus dados em JSON ou restaure um backup anterior.
       </p>
 
       <div style="margin-bottom:20px; background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
@@ -335,7 +345,7 @@
         <strong id="modal-last-date" style="font-size:0.9rem; color:var(--success)">Nunca</strong>
       </div>
 
-      <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Lembrar-me de fazer backup a cada:</label>
+      <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Lembrar-me a cada:</label>
       <select id="backup-freq" class="input" style="margin-top:0; margin-bottom:20px;" onchange="saveBackupFreq()">
         <option value="7">7 dias</option>
         <option value="15">15 dias</option>
@@ -349,6 +359,37 @@
   </div>
 
   <script>
+    // ── REGISTRO DO SERVICE WORKER (PWA) ──
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou:', err));
+      });
+    }
+
+    // ── LÓGICA DE INSTALAÇÃO (PWA BANNER) ──
+    let deferredPrompt;
+    const installBanner = document.getElementById('install-banner');
+    const btnInstall = document.getElementById('btn-install');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBanner.style.display = 'flex';
+    });
+
+    btnInstall.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') installBanner.style.display = 'none';
+        deferredPrompt = null;
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBanner.style.display = 'none';
+    });
+
     // ── NAVEGAÇÃO ──
     function switchTab(tabId, btnElement) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -357,7 +398,7 @@
       btnElement.classList.add('active');
     }
 
-    // ── BANCO DE DADOS LOCAL (LOCALSTORAGE) ──
+    // ── LOCALSTORAGE ──
     let db = {
       habits: JSON.parse(localStorage.getItem('dc_habits')) || {},
       reminders: JSON.parse(localStorage.getItem('dc_reminders')) || [],
@@ -369,7 +410,7 @@
       localStorage.setItem('dc_' + key, typeof data === 'string' ? data : JSON.stringify(data));
     }
 
-    // ── SISTEMA DE BACKUP ──
+    // ── BACKUP ──
     function toggleModal(show) {
       document.getElementById('modal-backup').classList.toggle('active', show);
       if(show) checkBackupStatus();
@@ -385,14 +426,12 @@
 
       if (lastBackup > 0) {
         labelLast.innerText = new Date(lastBackup).toLocaleDateString('pt-BR') + ' às ' + new Date(lastBackup).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-        
-        // Verifica se passou do prazo
         const daysPassed = (Date.now() - lastBackup) / (1000 * 60 * 60 * 24);
         banner.style.display = (daysPassed >= freqDays) ? 'flex' : 'none';
       } else {
         labelLast.innerText = 'Nenhum backup registrado';
         labelLast.style.color = 'var(--warning)';
-        banner.style.display = 'flex'; // Pede o primeiro backup
+        banner.style.display = 'flex';
       }
     }
 
@@ -402,87 +441,50 @@
     }
 
     function exportBackup() {
-      // Reúne o estado mais atual do DB
       const backupData = {
-        habits: db.habits,
-        reminders: db.reminders,
-        cycleStartDate: db.cycleStartDate,
-        stock: db.stock,
-        exportedAt: Date.now()
+        habits: db.habits, reminders: db.reminders,
+        cycleStartDate: db.cycleStartDate, stock: db.stock, exportedAt: Date.now()
       };
-
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
       downloadAnchor.setAttribute("download", "DailyCare_Backup_" + new Date().toISOString().split('T')[0] + ".json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
+      document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
 
-      // Registra que fez backup agora
       localStorage.setItem('dc_last_backup', Date.now());
-      checkBackupStatus();
-      toggleModal(false);
-      alert("✅ Backup baixado com sucesso! Guarde o arquivo em um local seguro.");
+      checkBackupStatus(); toggleModal(false);
     }
 
     function importBackup(event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         try {
           const importedData = JSON.parse(e.target.result);
-          
-          // Validação simples
           if (importedData && typeof importedData === 'object') {
-            db.habits = importedData.habits || {};
-            db.reminders = importedData.reminders || [];
-            db.cycleStartDate = importedData.cycleStartDate || '';
-            db.stock = importedData.stock || [];
-
-            // Grava tudo no localStorage
-            saveData('habits', db.habits);
-            saveData('reminders', db.reminders);
-            saveData('cycle_start', db.cycleStartDate);
-            saveData('stock', db.stock);
-
-            // Atualiza status de backup
+            db.habits = importedData.habits || {}; db.reminders = importedData.reminders || [];
+            db.cycleStartDate = importedData.cycleStartDate || ''; db.stock = importedData.stock || [];
+            saveData('habits', db.habits); saveData('reminders', db.reminders);
+            saveData('cycle_start', db.cycleStartDate); saveData('stock', db.stock);
             localStorage.setItem('dc_last_backup', Date.now());
-            
-            // Recarrega telas
-            initHabits();
-            renderReminders();
-            initCycle();
-            renderStock();
-            
-            alert("🎉 Dados restaurados com sucesso!");
-            toggleModal(false);
-          } else {
-            throw new Error("Formato inválido");
-          }
-        } catch(err) {
-          alert("❌ Erro ao ler o arquivo. Certifique-se de que selecionou um arquivo de backup válido do DailyCare.");
-        }
+            initHabits(); renderReminders(); initCycle(); renderStock();
+            alert("🎉 Dados restaurados com sucesso!"); toggleModal(false);
+          } else throw new Error();
+        } catch(err) { alert("❌ Erro ao ler o arquivo de backup."); }
       };
-      reader.readAsText(file);
-      event.target.value = ''; // Reseta o input
+      reader.readAsText(file); event.target.value = '';
     }
 
-    // ── LÓGICA DOS HÁBITOS ──
+    // ── HÁBITOS ──
     let currentDateKey = '';
-
     function initHabits() {
       const today = new Date().toISOString().split('T')[0];
-      document.getElementById('habit-date').value = today;
-      loadHabits();
+      document.getElementById('habit-date').value = today; loadHabits();
     }
-
     function loadHabits() {
       currentDateKey = document.getElementById('habit-date').value;
       const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false, vitamins: false };
-      
       document.getElementById('count-water').innerText = dayData.water;
       document.getElementById('count-sleep').innerText = dayData.sleep + 'h';
       document.getElementById('check-stretch').checked = dayData.stretch;
@@ -490,163 +492,80 @@
       document.getElementById('check-diet').checked = dayData.diet;
       document.getElementById('check-vitamins').checked = dayData.vitamins;
     }
-
     function updateHabitCount(type, amount) {
       const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false, vitamins: false };
       dayData[type] = Math.max(0, dayData[type] + amount);
-      db.habits[currentDateKey] = dayData;
-      saveData('habits', db.habits);
-      loadHabits();
+      db.habits[currentDateKey] = dayData; saveData('habits', db.habits); loadHabits();
     }
-
     function saveHabits() {
       const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0 };
       dayData.stretch = document.getElementById('check-stretch').checked;
       dayData.poop = document.getElementById('check-poop').checked;
       dayData.diet = document.getElementById('check-diet').checked;
       dayData.vitamins = document.getElementById('check-vitamins').checked;
-      
-      db.habits[currentDateKey] = dayData;
-      saveData('habits', db.habits);
+      db.habits[currentDateKey] = dayData; saveData('habits', db.habits);
     }
 
-    // ── LÓGICA DOS LEMBRETES ──
+    // ── LEMBRETES ──
     function renderReminders() {
       const list = document.getElementById('reminders-list');
-      if (!db.reminders.length) {
-        list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Nenhum lembrete cadastrado.</p>';
-        return;
-      }
-      
+      if (!db.reminders.length) return list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Nenhum lembrete cadastrado.</p>';
       const sorted = [...db.reminders].sort((a,b) => new Date(a.date) - new Date(b.date));
-      
       list.innerHTML = sorted.map((rem) => {
         const dateStr = rem.date ? new Date(rem.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'Sem data';
-        return `
-          <div class="list-item">
-            <div>
-              <strong style="font-size:0.9rem; display:block;">${rem.title}</strong>
-              <span style="font-size:0.75rem; color:var(--text-muted)">📅 ${dateStr} • ${rem.type}</span>
-            </div>
-            <button onclick="deleteReminder('${rem.id}')" style="color:var(--danger); font-size:1.1rem;">🗑</button>
-          </div>
-        `;
+        return `<div class="list-item"><div><strong style="font-size:0.9rem; display:block;">${rem.title}</strong><span style="font-size:0.75rem; color:var(--text-muted)">📅 ${dateStr} • ${rem.type}</span></div><button onclick="deleteReminder('${rem.id}')" style="color:var(--danger); font-size:1.1rem;">🗑</button></div>`;
       }).join('');
     }
-
     function addReminder() {
       const title = document.getElementById('rem-title').value.trim();
       const date = document.getElementById('rem-date').value;
       const type = document.getElementById('rem-type').value;
-
-      if (!title) return alert('Digite o título do compromisso!');
-
+      if (!title) return alert('Digite o título!');
       db.reminders.push({ id: Date.now().toString(), title, date, type });
       saveData('reminders', db.reminders);
-      
-      document.getElementById('rem-title').value = '';
-      document.getElementById('rem-date').value = '';
-      renderReminders();
+      document.getElementById('rem-title').value = ''; document.getElementById('rem-date').value = ''; renderReminders();
     }
+    function deleteReminder(id) { db.reminders = db.reminders.filter(r => r.id !== id); saveData('reminders', db.reminders); renderReminders(); }
 
-    function deleteReminder(id) {
-      db.reminders = db.reminders.filter(r => r.id !== id);
-      saveData('reminders', db.reminders);
-      renderReminders();
-    }
-
-    // ── LÓGICA DO CICLO MENSTRUAL ──
-    function initCycle() {
-      if (db.cycleStartDate) {
-        document.getElementById('last-cycle-date').value = db.cycleStartDate;
-        calculateCycle();
-      }
-    }
-
+    // ── CICLO ──
+    function initCycle() { if (db.cycleStartDate) { document.getElementById('last-cycle-date').value = db.cycleStartDate; calculateCycle(); } }
     function startNewCycle() {
-      const today = new Date().toISOString().split('T')[0];
-      db.cycleStartDate = today;
-      saveData('cycle_start', today);
-      document.getElementById('last-cycle-date').value = today;
-      calculateCycle();
+      const today = new Date().toISOString().split('T')[0]; db.cycleStartDate = today;
+      saveData('cycle_start', today); document.getElementById('last-cycle-date').value = today; calculateCycle();
     }
-
     function setCustomCycleDate() {
       const date = document.getElementById('last-cycle-date').value;
-      if (date) {
-        db.cycleStartDate = date;
-        saveData('cycle_start', date);
-        calculateCycle();
-      }
+      if (date) { db.cycleStartDate = date; saveData('cycle_start', date); calculateCycle(); }
     }
-
     function calculateCycle() {
       if (!db.cycleStartDate) return;
       const start = new Date(db.cycleStartDate + 'T00:00:00');
-      const today = new Date();
-      today.setHours(0,0,0,0);
-      
-      const diffTime = Math.abs(today - start);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-      
+      const today = new Date(); today.setHours(0,0,0,0);
+      const diffDays = Math.ceil(Math.abs(today - start) / (1000 * 60 * 60 * 24)) + 1;
       document.getElementById('cycle-day-display').innerText = `Dia ${diffDays}`;
-      
-      const nextPeriod = new Date(start);
-      nextPeriod.setDate(start.getDate() + 28);
+      const nextPeriod = new Date(start); nextPeriod.setDate(start.getDate() + 28);
       document.getElementById('cycle-info').innerText = `Próxima estimativa: ${nextPeriod.toLocaleDateString('pt-BR')}`;
     }
 
-    // ── LÓGICA DO ESTOQUE / COMPRAS ──
+    // ── ESTOQUE ──
     function renderStock() {
       const list = document.getElementById('stock-list');
-      if (!db.stock.length) {
-        list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Estoque em dia! Nada faltando.</p>';
-        return;
-      }
-
+      if (!db.stock.length) return list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Estoque em dia!</p>';
       list.innerHTML = db.stock.map((item) => {
         const tagClass = item.status === 'Faltando' ? 'tag-urgente' : 'tag-aviso';
-        return `
-          <div class="list-item">
-            <div style="display:flex; align-items:center; gap:10px;">
-              <input type="checkbox" style="width:18px; height:18px;" onchange="deleteStockItem('${item.id}')" title="Marcar como comprado">
-              <span style="font-size:0.9rem;">${item.name}</span>
-            </div>
-            <span class="tag ${tagClass}">${item.status}</span>
-          </div>
-        `;
+        return `<div class="list-item"><div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" style="width:18px; height:18px;" onchange="deleteStockItem('${item.id}')"><span style="font-size:0.9rem;">${item.name}</span></div><span class="tag ${tagClass}">${item.status}</span></div>`;
       }).join('');
     }
-
     function addStockItem() {
       const name = document.getElementById('stock-item-name').value.trim();
       const status = document.getElementById('stock-item-status').value;
-
       if (!name) return;
-
-      db.stock.push({ id: Date.now().toString(), name, status });
-      saveData('stock', db.stock);
-
-      document.getElementById('stock-item-name').value = '';
-      renderStock();
+      db.stock.push({ id: Date.now().toString(), name, status }); saveData('stock', db.stock);
+      document.getElementById('stock-item-name').value = ''; renderStock();
     }
+    function deleteStockItem(id) { setTimeout(() => { db.stock = db.stock.filter(i => i.id !== id); saveData('stock', db.stock); renderStock(); }, 300); }
 
-    function deleteStockItem(id) {
-      setTimeout(() => {
-        db.stock = db.stock.filter(i => i.id !== id);
-        saveData('stock', db.stock);
-        renderStock();
-      }, 300);
-    }
-
-    // ── INICIALIZAÇÃO GERAL ──
-    window.onload = function() {
-      initHabits();
-      renderReminders();
-      initCycle();
-      renderStock();
-      checkBackupStatus(); // Dispara o lembrete de backup se necessário
-    };
+    window.onload = function() { initHabits(); renderReminders(); initCycle(); renderStock(); checkBackupStatus(); };
   </script>
 </body>
 </html>
