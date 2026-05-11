@@ -2,10 +2,12 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="favicon.ico" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MySS - Painel Pessoal</title>
   
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -19,9 +21,9 @@
       --bg-card: #FFFFFF;
       --bg-input: #FFFFFF;
       --border-color: #E2E8F0;
-      --accent: #D946EF; /* Pink/Fuchsia */
+      --accent: #D946EF; 
       --accent-hover: #C026D3;
-      --secondary: #8B5CF6; /* Lavender/Violet */
+      --secondary: #8B5CF6; 
       --text-main: #1E293B;
       --text-muted: #64748B;
       --danger: #EF4444;
@@ -40,24 +42,15 @@
       padding-bottom: 90px;
     }
 
-    button {
-      border: none; background: none; color: inherit;
-      font-family: inherit; cursor: pointer; transition: 0.2s;
-    }
-    
-    input, select, textarea {
-      font-family: inherit; color: inherit; outline: none;
-    }
+    button { border: none; background: none; color: inherit; font-family: inherit; cursor: pointer; transition: 0.2s; }
+    input, select, textarea { font-family: inherit; color: inherit; outline: none; }
 
     /* ==========================================
        2. ESTRUTURA
        ========================================== */
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-    .header { 
-      text-align: center; margin-bottom: 24px; position: relative; 
-      padding: 10px 0;
-    }
+    .header { text-align: center; margin-bottom: 24px; position: relative; padding: 10px 0; }
     .header h1 { 
       font-size: 1.85rem; font-weight: 800; 
       background: linear-gradient(90deg, var(--accent), var(--secondary));
@@ -87,10 +80,7 @@
       font-size: 0.7rem; color: var(--text-muted); font-weight: 600;
       padding: 8px 10px; border-radius: 14px; flex: 1;
     }
-    .nav-item.active {
-      color: var(--accent);
-      background-color: rgba(217, 70, 239, 0.08);
-    }
+    .nav-item.active { color: var(--accent); background-color: rgba(217, 70, 239, 0.08); }
     .nav-icon { font-size: 1.3rem; }
 
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
@@ -126,7 +116,7 @@
       width: 100%; font-size: 0.85rem; margin-top: 10px;
     }
     
-    /* Health Log Items */
+    /* Log Items */
     .log-item {
       padding: 16px; border-radius: 16px; background: #F8FAFC;
       border: 1px solid var(--border-color); margin-bottom: 12px;
@@ -137,7 +127,7 @@
     .log-reason { font-size: 0.85rem; color: var(--accent); margin-top: 4px; font-weight: 500; }
     .log-notes { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-color); }
 
-    /* Banner Backup */
+    /* Backup Banner */
     .backup-banner {
       background-color: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning);
       border-radius: 16px; padding: 14px; margin-bottom: 20px;
@@ -145,25 +135,20 @@
     }
     .backup-banner span { font-size: 0.8rem; color: #92400E; font-weight: 600; }
 
-    /* Modals */
+    /* Modal */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);
       display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px;
     }
     .modal-overlay.active { display: flex; }
-    .modal-box {
-      background-color: white; border-radius: 28px; padding: 28px; width: 100%; max-width: 450px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
+    .modal-box { background-color: white; border-radius: 28px; padding: 28px; width: 100%; max-width: 450px; }
     
-    /* Habit Styles */
-    .habit-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 14px 0; border-bottom: 1px solid #F1F5F9;
-    }
+    .habit-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #F1F5F9; }
     .counter-box { display: flex; align-items: center; gap: 14px; }
-    .btn-icon { background: #F1F5F9; width: 38px; height: 38px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
+    .btn-icon { background: #F1F5F9; width: 38px; height: 38px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+
+    .list-item { background-color: white; border: 1px solid var(--border-color); border-radius: 14px; padding: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
@@ -226,12 +211,12 @@
         <div class="card-title" style="color: var(--pink);">🩸 Controle de Ciclo</div>
         <div style="text-align: center; padding: 15px 0;">
           <h2 id="cycle-day-display" style="font-size: 2.8rem; color: var(--pink); font-weight: 800;">Dia --</h2>
-          <p id="cycle-info" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Aguardando início de ciclo</p>
+          <p id="cycle-info" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Aguardando início</p>
         </div>
         <button class="btn-primary" style="background: var(--pink);" onclick="startNewCycle()">Menstruei Hoje</button>
       </div>
       <div class="card">
-        <div class="card-title">Última Data</div>
+        <div class="card-title">Ajustar Manualmente</div>
         <input type="date" id="last-cycle-date" class="input" onchange="setCustomCycleDate()">
       </div>
     </main>
@@ -272,24 +257,24 @@
 
   <div id="modal-med" class="modal-overlay" onclick="if(event.target===this) toggleModal('med', false)">
     <div class="modal-box">
-      <h3 style="margin-bottom:15px;">💊 Nova Medicação</h3>
-      <input type="text" id="med-name" class="input" placeholder="Nome do remédio">
+      <h3>💊 Nova Medicação</h3>
+      <input type="text" id="med-name" class="input" placeholder="Remédio">
       <div style="display:flex; gap:10px;">
-        <div style="flex:1;"><label style="font-size:0.7rem; color:var(--text-muted);">Início</label><input type="date" id="med-start" class="input"></div>
-        <div style="flex:1;"><label style="font-size:0.7rem; color:var(--text-muted);">Fim (Previsão)</label><input type="date" id="med-end" class="input"></div>
+        <div style="flex:1;"><label style="font-size:0.7rem;">Início</label><input type="date" id="med-start" class="input"></div>
+        <div style="flex:1;"><label style="font-size:0.7rem;">Fim</label><input type="date" id="med-end" class="input"></div>
       </div>
-      <input type="text" id="med-reason" class="input" placeholder="Motivo (Ex: Dor de cabeça)">
-      <textarea id="med-notes" class="input" placeholder="Notas e observações..." rows="3"></textarea>
-      <button class="btn-primary" onclick="addMedication()">Salvar no Log</button>
+      <input type="text" id="med-reason" class="input" placeholder="Motivo">
+      <textarea id="med-notes" class="input" placeholder="Notas..." rows="3"></textarea>
+      <button class="btn-primary" onclick="addMedication()">Salvar</button>
     </div>
   </div>
 
   <div id="modal-vit" class="modal-overlay" onclick="if(event.target===this) toggleModal('vit', false)">
     <div class="modal-box">
-      <h3 style="margin-bottom:15px;">✨ Nova Vitamina</h3>
-      <input type="text" id="vit-name" class="input" placeholder="Nome da Vitamina">
-      <input type="text" id="vit-dose" class="input" placeholder="Valor/Dosagem (Ex: 500mg, 1 gota)">
-      <input type="text" id="vit-period" class="input" placeholder="Período/Frequência (Ex: Todo dia cedo)">
+      <h3>✨ Nova Vitamina</h3>
+      <input type="text" id="vit-name" class="input" placeholder="Vitamina">
+      <input type="text" id="vit-dose" class="input" placeholder="Dosagem">
+      <input type="text" id="vit-period" class="input" placeholder="Período">
       <textarea id="vit-notes" class="input" placeholder="Notas..." rows="2"></textarea>
       <button class="btn-primary" onclick="addVitamin()">Registrar</button>
     </div>
@@ -298,16 +283,13 @@
   <div id="modal-backup" class="modal-overlay" onclick="if(event.target===this) toggleModal('backup', false)">
     <div class="modal-box">
       <h3>⚙️ Configurações</h3>
-      <div style="margin: 15px 0; font-size: 0.85rem; color:var(--text-muted);">Mantenha seus dados seguros exportando seu arquivo de backup periodicamente.</div>
       <button class="btn-primary" onclick="exportBackup()">Exportar Backup (.json)</button>
       <button class="btn-secondary" onclick="document.getElementById('file-input').click()">Restaurar Backup</button>
       <input type="file" id="file-input" accept=".json" style="display:none" onchange="importBackup(event)">
-      <button class="btn-secondary" style="background:#FEE2E2; color:#B91C1C; margin-top:30px;" onclick="if(confirm('Apagar TUDO?')) { localStorage.clear(); location.reload(); }">Limpar Tudo</button>
     </div>
   </div>
 
   <script>
-    // ── NAVEGAÇÃO ──
     function switchTab(tabId, btnElement) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -315,7 +297,6 @@
       btnElement.classList.add('active');
     }
 
-    // ── BANCO DE DADOS ──
     let db = {
       habits: JSON.parse(localStorage.getItem('myss_habits')) || {},
       reminders: JSON.parse(localStorage.getItem('myss_reminders')) || [],
@@ -329,16 +310,12 @@
       localStorage.setItem('myss_' + key, typeof data === 'string' ? data : JSON.stringify(data));
     }
 
-    function toggleModal(id, show) {
-      document.getElementById('modal-' + id).classList.toggle('active', show);
-    }
+    function toggleModal(id, show) { document.getElementById('modal-' + id).classList.toggle('active', show); }
 
-    // ── HÁBITOS ──
     let currentDateKey = '';
     function initHabits() {
       const today = new Date().toISOString().split('T')[0];
-      document.getElementById('habit-date').value = today;
-      loadHabits();
+      document.getElementById('habit-date').value = today; loadHabits();
     }
     function loadHabits() {
       currentDateKey = document.getElementById('habit-date').value;
@@ -362,149 +339,77 @@
       db.habits[currentDateKey] = dayData; saveData('habits', db.habits);
     }
 
-    // ── SAÚDE: MEDICAÇÃO ──
     function renderMedications() {
       const list = document.getElementById('med-list');
-      if (!db.medications.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Nenhum medicamento registrado.</p>'; return; }
+      if (!db.medications.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Vazio.</p>'; return; }
       list.innerHTML = db.medications.map(m => `
         <div class="log-item">
-          <div class="log-header">
-            <span class="log-name">${m.name}</span>
-            <button onclick="deleteMed('${m.id}')" style="color:var(--danger); font-size:0.8rem;">🗑</button>
-          </div>
-          <div class="log-period">📅 ${new Date(m.start + 'T00:00:00').toLocaleDateString('pt-BR')} ${m.end ? 'até ' + new Date(m.end + 'T00:00:00').toLocaleDateString('pt-BR') : '(em curso)'}</div>
-          <div class="log-reason">Motivo: ${m.reason || 'Não informado'}</div>
-          ${m.notes ? `<div class="log-notes">${m.notes}</div>` : ''}
+          <div class="log-header"><span class="log-name">${m.name}</span><button onclick="deleteMed('${m.id}')" style="color:var(--danger);">🗑</button></div>
+          <div class="log-period">📅 ${m.start} ${m.end ? 'até ' + m.end : ''}</div>
+          <div class="log-reason">Motivo: ${m.reason || '-'}</div>
         </div>
       `).join('');
     }
     function addMedication() {
-      const name = document.getElementById('med-name').value;
-      if (!name) return alert('Dê um nome ao remédio');
-      db.medications.unshift({
-        id: Date.now().toString(), name, reason: document.getElementById('med-reason').value,
-        start: document.getElementById('med-start').value, end: document.getElementById('med-end').value,
-        notes: document.getElementById('med-notes').value
-      });
+      db.medications.unshift({ id: Date.now().toString(), name: document.getElementById('med-name').value, reason: document.getElementById('med-reason').value, start: document.getElementById('med-start').value, end: document.getElementById('med-end').value, notes: document.getElementById('med-notes').value });
       saveData('meds', db.medications); renderMedications(); toggleModal('med', false);
-      ['med-name','med-reason','med-start','med-end','med-notes'].forEach(i => document.getElementById(i).value = '');
     }
-    function deleteMed(id) { if(confirm('Excluir este log?')) { db.medications = db.medications.filter(m => m.id !== id); saveData('meds', db.medications); renderMedications(); } }
+    function deleteMed(id) { db.medications = db.medications.filter(m => m.id !== id); saveData('meds', db.medications); renderMedications(); }
 
-    // ── SAÚDE: VITAMINAS ──
     function renderVitamins() {
       const list = document.getElementById('vit-list');
-      if (!db.vitamins.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Nenhuma vitamina registrada.</p>'; return; }
+      if (!db.vitamins.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Vazio.</p>'; return; }
       list.innerHTML = db.vitamins.map(v => `
         <div class="log-item" style="border-left: 4px solid var(--secondary);">
-          <div class="log-header">
-            <span class="log-name">${v.name} <span style="font-size:0.75rem; color:var(--secondary);">(${v.dose})</span></span>
-            <button onclick="deleteVit('${v.id}')" style="color:var(--danger); font-size:0.8rem;">🗑</button>
-          </div>
-          <div class="log-period" style="color:var(--secondary);">Frequência: ${v.period || 'Não informada'}</div>
-          ${v.notes ? `<div class="log-notes">${v.notes}</div>` : ''}
+          <div class="log-header"><span class="log-name">${v.name} (${v.dose})</span><button onclick="deleteVit('${v.id}')" style="color:var(--danger);">🗑</button></div>
+          <div style="font-size:0.8rem; color:var(--secondary);">${v.period}</div>
         </div>
       `).join('');
     }
     function addVitamin() {
-      const name = document.getElementById('vit-name').value;
-      if (!name) return alert('Dê um nome');
-      db.vitamins.unshift({
-        id: Date.now().toString(), name, dose: document.getElementById('vit-dose').value,
-        period: document.getElementById('vit-period').value, notes: document.getElementById('vit-notes').value
-      });
+      db.vitamins.unshift({ id: Date.now().toString(), name: document.getElementById('vit-name').value, dose: document.getElementById('vit-dose').value, period: document.getElementById('vit-period').value, notes: document.getElementById('vit-notes').value });
       saveData('vits', db.vitamins); renderVitamins(); toggleModal('vit', false);
-      ['vit-name','vit-dose','vit-period','vit-notes'].forEach(i => document.getElementById(i).value = '');
     }
-    function deleteVit(id) { if(confirm('Excluir registro?')) { db.vitamins = db.vitamins.filter(v => v.id !== id); saveData('vits', db.vitamins); renderVitamins(); } }
+    function deleteVit(id) { db.vitamins = db.vitamins.filter(v => v.id !== id); saveData('vits', db.vitamins); renderVitamins(); }
 
-    // ── CICLO ──
     function initCycle() { if (db.cycleStartDate) { document.getElementById('last-cycle-date').value = db.cycleStartDate; calculateCycle(); } }
-    function startNewCycle() {
-      const today = new Date().toISOString().split('T')[0]; db.cycleStartDate = today;
-      saveData('cycle_start', today); document.getElementById('last-cycle-date').value = today; calculateCycle();
-    }
+    function startNewCycle() { const today = new Date().toISOString().split('T')[0]; db.cycleStartDate = today; saveData('cycle_start', today); calculateCycle(); }
     function setCustomCycleDate() { const date = document.getElementById('last-cycle-date').value; if (date) { db.cycleStartDate = date; saveData('cycle_start', date); calculateCycle(); } }
     function calculateCycle() {
       if (!db.cycleStartDate) return;
       const start = new Date(db.cycleStartDate + 'T00:00:00');
       const diffDays = Math.ceil(Math.abs(new Date().setHours(0,0,0,0) - start) / (1000 * 60 * 60 * 24)) + 1;
       document.getElementById('cycle-day-display').innerText = `Dia ${diffDays}`;
-      const next = new Date(start); next.setDate(start.getDate() + 28);
-      document.getElementById('cycle-info').innerText = `Estimativa próxima: ${next.toLocaleDateString('pt-BR')}`;
     }
 
-    // ── AGENDA ──
     function renderReminders() {
       const list = document.getElementById('reminders-list');
-      if (!db.reminders.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">Agenda vazia.</p>'; return; }
-      const sorted = [...db.reminders].sort((a,b) => new Date(a.date) - new Date(b.date));
-      list.innerHTML = sorted.map(rem => `
-        <div class="list-item">
-          <div><strong style="font-size:0.9rem;">${rem.title}</strong><br><span style="font-size:0.75rem; color:var(--text-muted)">📅 ${new Date(rem.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span></div>
-          <button onclick="deleteReminder('${rem.id}')" style="color:var(--danger);">🗑</button>
-        </div>
-      `).join('');
+      if (!db.reminders.length) { list.innerHTML = ''; return; }
+      list.innerHTML = db.reminders.map(rem => `<div class="list-item"><div><strong>${rem.title}</strong><br><small>${rem.date}</small></div><button onclick="deleteReminder('${rem.id}')" style="color:var(--danger);">🗑</button></div>`).join('');
     }
-    function addReminder() {
-      const title = document.getElementById('rem-title').value.trim();
-      const date = document.getElementById('rem-date').value;
-      if (!title || !date) return alert('Preencha título e data');
-      db.reminders.push({ id: Date.now().toString(), title, date });
-      saveData('reminders', db.reminders); document.getElementById('rem-title').value = ''; renderReminders();
-    }
+    function addReminder() { db.reminders.push({ id: Date.now().toString(), title: document.getElementById('rem-title').value, date: document.getElementById('rem-date').value }); saveData('reminders', db.reminders); renderReminders(); }
     function deleteReminder(id) { db.reminders = db.reminders.filter(r => r.id !== id); saveData('reminders', db.reminders); renderReminders(); }
 
-    // ── ESTOQUE ──
     function renderStock() {
       const list = document.getElementById('stock-list');
-      if (!db.stock.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">Tudo em estoque!</p>'; return; }
-      list.innerHTML = db.stock.map(i => `
-        <div class="list-item">
-          <div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" onchange="deleteStockItem('${i.id}')"><span>${i.name}</span></div>
-          <span style="font-size:0.65rem; padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.05); font-weight:700;">${i.status}</span>
-        </div>
-      `).join('');
+      if (!db.stock.length) { list.innerHTML = ''; return; }
+      list.innerHTML = db.stock.map(i => `<div class="list-item"><div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" onchange="deleteStockItem('${i.id}')"><span>${i.name}</span></div><small>${i.status}</small></div>`).join('');
     }
-    function addStockItem() {
-      const name = document.getElementById('stock-name').value.trim();
-      if (!name) return;
-      db.stock.push({ id: Date.now().toString(), name, status: document.getElementById('stock-status').value });
-      saveData('stock', db.stock); document.getElementById('stock-name').value = ''; renderStock();
-    }
+    function addStockItem() { db.stock.push({ id: Date.now().toString(), name: document.getElementById('stock-name').value, status: document.getElementById('stock-status').value }); saveData('stock', db.stock); renderStock(); }
     function deleteStockItem(id) { setTimeout(() => { db.stock = db.stock.filter(i => i.id !== id); saveData('stock', db.stock); renderStock(); }, 300); }
 
-    // ── BACKUP ──
     function exportBackup() {
-      const data = JSON.stringify(db);
-      const blob = new Blob([data], {type: 'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = `MySS_Backup_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(a); a.click(); a.remove();
-      localStorage.setItem('myss_last_backup', Date.now());
-      document.getElementById('backup-banner').style.display = 'none';
-      toggleModal('backup', false);
+      const a = document.createElement('a'); a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); a.download = "MySS_Backup.json"; a.click();
     }
     function importBackup(event) {
-      const file = event.target.files[0];
-      if (!file) return;
       const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          const imported = JSON.parse(e.target.result);
-          Object.keys(imported).forEach(k => saveData(k.replace('myss_',''), imported[k]));
-          alert("Backup restaurado! O app irá recarregar."); location.reload();
-        } catch(err) { alert("Erro ao importar backup."); }
-      };
-      reader.readAsText(file);
+      reader.onload = e => { db = JSON.parse(e.target.result); Object.keys(db).forEach(k => saveData(k, db[k])); location.reload(); };
+      reader.readAsText(event.target.files[0]);
     }
 
-    function checkBackupStatus() {
-      const last = parseInt(localStorage.getItem('myss_last_backup')) || 0;
-      if (Date.now() - last > (1000 * 60 * 60 * 24 * 7)) document.getElementById('backup-banner').style.display = 'flex';
-    }
+    window.onload = () => { initHabits(); renderMedications(); renderVitamins(); initCycle(); renderReminders(); renderStock(); };
 
-    window.onload = () => { initHabits(); renderMedications(); renderVitamins(); initCycle(); renderReminders(); renderStock(); checkBackupStatus(); };
+    navigator.serviceWorker?.register?.('sw.js');
   </script>
 </body>
 </html>
