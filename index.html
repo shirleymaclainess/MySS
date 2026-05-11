@@ -3,30 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MySS</title>
+  <title>MySS - Painel Pessoal</title>
   
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#162033">
+  <meta name="theme-color" content="#FFFFFF">
   <link rel="icon" type="image/png" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <style>
     /* ==========================================
-       1. VARIÁVEIS E RESET
+       1. VARIÁVEIS E RESET (TEMA CLARO MySS)
        ========================================== */
     :root {
-      --bg-base: #081120;
-      --bg-card: #162033;
-      --bg-input: #0f172a;
-      --border-color: #334155;
-      --accent: #4f46e5;
-      --accent-hover: #6366f1;
-      --text-main: #ffffff;
-      --text-muted: #94a3b8;
-      --danger: #ef4444;
-      --success: #10b981;
-      --warning: #facc15;
-      --pink: #ec4899;
+      --bg-base: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-input: #FFFFFF;
+      --border-color: #E2E8F0;
+      --accent: #D946EF; /* Pink/Fuchsia */
+      --accent-hover: #C026D3;
+      --secondary: #8B5CF6; /* Lavender/Violet */
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --danger: #EF4444;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --pink: #EC4899;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,144 +37,133 @@
       color: var(--text-main);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.5;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
 
     button {
       border: none; background: none; color: inherit;
-      font-family: inherit; cursor: pointer; transition: opacity 0.2s;
+      font-family: inherit; cursor: pointer; transition: 0.2s;
     }
-    button:hover { opacity: 0.8; }
     
-    input, select {
+    input, select, textarea {
       font-family: inherit; color: inherit; outline: none;
     }
 
     /* ==========================================
-       2. ESTRUTURA E LAYOUT
+       2. ESTRUTURA
        ========================================== */
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
-    .header { text-align: center; margin-bottom: 20px; position: relative; }
-    .header h1 { font-size: 1.75rem; font-weight: 700; }
-    .header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
+    .header { 
+      text-align: center; margin-bottom: 24px; position: relative; 
+      padding: 10px 0;
+    }
+    .header h1 { 
+      font-size: 1.85rem; font-weight: 800; 
+      background: linear-gradient(90deg, var(--accent), var(--secondary));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 2px; font-weight: 500; }
     
     .btn-settings {
-      position: absolute; right: 0; top: 0;
+      position: absolute; right: 0; top: 12px;
       background: var(--bg-card); border: 1px solid var(--border-color);
       width: 42px; height: 42px; border-radius: 14px;
-      font-size: 1.25rem; display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    /* Banners Dinâmicos (Instalação e Backup) */
-    .install-banner, .backup-banner {
-      border-radius: 16px; padding: 12px 16px; margin-bottom: 20px;
-      display: none; justify-content: space-between; align-items: center; gap: 10px;
-    }
-    .install-banner {
-      background-color: rgba(79, 70, 229, 0.15); border: 1px solid var(--accent);
-    }
-    .install-banner span { font-size: 0.85rem; color: #a5b4fc; font-weight: 600; }
-    
-    .backup-banner {
-      background-color: rgba(250, 204, 21, 0.15); border: 1px solid var(--warning);
-    }
-    .backup-banner span { font-size: 0.85rem; color: var(--warning); font-weight: 600; }
-
-    .btn-banner {
-      padding: 8px 12px; border-radius: 10px;
-      font-weight: 700; font-size: 0.75rem; flex-shrink: 0;
-    }
-    .btn-banner-install { background-color: var(--accent); color: white; }
-    .btn-banner-backup { background-color: var(--warning); color: #000; }
-
-    /* Barra de Navegação Inferior */
+    /* Navegação Inferior */
     .nav-bar {
       position: fixed; bottom: 0; left: 0; right: 0;
       background-color: var(--bg-card); border-top: 1px solid var(--border-color);
-      display: flex; justify-content: space-around; padding: 10px 5px;
+      display: flex; justify-content: space-around; padding: 12px 5px;
       z-index: 100; max-width: 600px; margin: 0 auto;
+      box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
     }
 
     .nav-item {
       display: flex; flex-direction: column; align-items: center; gap: 4px;
-      font-size: 0.75rem; color: var(--text-muted); font-weight: 600;
-      padding: 8px 12px; border-radius: 12px;
+      font-size: 0.7rem; color: var(--text-muted); font-weight: 600;
+      padding: 8px 10px; border-radius: 14px; flex: 1;
     }
     .nav-item.active {
-      color: var(--accent-hover);
-      background-color: rgba(79, 70, 229, 0.15);
+      color: var(--accent);
+      background-color: rgba(217, 70, 239, 0.08);
     }
-    .nav-icon { font-size: 1.25rem; }
+    .nav-icon { font-size: 1.3rem; }
 
-    .tab-content { display: none; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
 
-    /* ==========================================
-       3. COMPONENTES VISUAIS E MODAL
-       ========================================== */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards */
     .card {
-      background-color: var(--bg-card); border-radius: 20px;
-      padding: 20px; margin-bottom: 16px; border: 1px solid rgba(51, 65, 85, 0.5);
+      background-color: var(--bg-card); border-radius: 22px;
+      padding: 22px; margin-bottom: 18px; 
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
     }
 
-    .card-title { font-size: 1.125rem; font-weight: 700; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;}
+    .card-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;}
     
     .input {
       width: 100%; background-color: var(--bg-input);
       border: 1px solid var(--border-color); border-radius: 14px;
-      padding: 14px; color: white; margin-top: 6px; font-size: 0.875rem;
+      padding: 14px; color: var(--text-main); margin-top: 8px; font-size: 0.9rem;
     }
-    .input:focus { border-color: var(--accent); }
+    .input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.1); }
 
     .btn-primary {
-      background-color: var(--accent); color: white;
-      padding: 14px 20px; border-radius: 14px; font-weight: 600;
-      width: 100%; font-size: 0.875rem; margin-top: 10px;
-      display: block; text-align: center;
+      background: linear-gradient(135deg, var(--accent), var(--secondary));
+      color: white; padding: 16px 20px; border-radius: 16px; font-weight: 700;
+      width: 100%; font-size: 0.9rem; margin-top: 12px; display: block; text-align: center;
     }
     .btn-secondary {
-      background-color: var(--bg-input); border: 1px solid var(--border-color);
-      color: white; padding: 14px 20px; border-radius: 14px; font-weight: 600;
-      width: 100%; font-size: 0.875rem; margin-top: 10px;
+      background-color: #F1F5F9; color: var(--text-main); 
+      padding: 14px 20px; border-radius: 14px; font-weight: 600;
+      width: 100%; font-size: 0.85rem; margin-top: 10px;
     }
     
-    .flex-row { display: flex; gap: 10px; align-items: center; }
-    
-    .habit-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 12px 0; border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+    /* Health Log Items */
+    .log-item {
+      padding: 16px; border-radius: 16px; background: #F8FAFC;
+      border: 1px solid var(--border-color); margin-bottom: 12px;
     }
-    .habit-item:last-child { border-bottom: none; }
-    
-    .counter-box { display: flex; align-items: center; gap: 12px; }
-    .btn-icon { 
-      background-color: var(--bg-input); border: 1px solid var(--border-color);
-      width: 36px; height: 36px; border-radius: 10px; font-weight: bold;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .log-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    .log-name { font-weight: 700; color: var(--text-main); }
+    .log-period { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+    .log-reason { font-size: 0.85rem; color: var(--accent); margin-top: 4px; font-weight: 500; }
+    .log-notes { font-size: 0.8rem; color: var(--text-muted); font-style: italic; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-color); }
 
-    .list-item {
-      background-color: var(--bg-input); border: 1px solid var(--border-color);
-      border-radius: 14px; padding: 14px; margin-bottom: 10px;
-      display: flex; justify-content: space-between; align-items: center;
+    /* Banner Backup */
+    .backup-banner {
+      background-color: rgba(245, 158, 11, 0.1); border: 1px solid var(--warning);
+      border-radius: 16px; padding: 14px; margin-bottom: 20px;
+      display: none; justify-content: space-between; align-items: center;
     }
-    .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 6px; font-weight: bold; text-transform: uppercase; }
-    .tag-urgente { background-color: rgba(239, 68, 68, 0.2); color: var(--danger); }
-    .tag-aviso { background-color: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .backup-banner span { font-size: 0.8rem; color: #92400E; font-weight: 600; }
 
-    /* Modal */
+    /* Modals */
     .modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
-      display: none; justify-content: center; align-items: center;
-      z-index: 200; padding: 20px;
+      background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 200; padding: 20px;
     }
     .modal-overlay.active { display: flex; }
     .modal-box {
-      background-color: var(--bg-card); border: 1px solid var(--border-color);
-      border-radius: 24px; padding: 24px; width: 100%; max-width: 400px;
+      background-color: white; border-radius: 28px; padding: 28px; width: 100%; max-width: 450px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
+    
+    /* Habit Styles */
+    .habit-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid #F1F5F9;
+    }
+    .counter-box { display: flex; align-items: center; gap: 14px; }
+    .btn-icon { background: #F1F5F9; width: 38px; height: 38px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
   </style>
 </head>
 <body>
@@ -181,215 +171,142 @@
   <div class="container">
     <header class="header">
       <h1>MySS</h1>
-      <p>Seu controle pessoal simplificado</p>
-      <button class="btn-settings" onclick="toggleModal(true)" title="Configurações de Backup">⚙️</button>
+      <p>Sua saúde em plena luz</p>
+      <button class="btn-settings" onclick="toggleModal('backup', true)">⚙️</button>
     </header>
 
-    <div id="install-banner" class="install-banner">
-      <span>📲 Instale o MySS no seu celular!</span>
-      <button class="btn-banner btn-banner-install" id="btn-install">Instalar</button>
-    </div>
-
     <div id="backup-banner" class="backup-banner">
-      <span>⚠️ Já faz um tempo desde o seu último backup!</span>
-      <button class="btn-banner btn-banner-backup" onclick="exportBackup()">Baixar Dados</button>
+      <span>⚠️ Hora de garantir seus dados!</span>
+      <button onclick="exportBackup()" style="background:var(--warning); color:white; padding:6px 12px; border-radius:8px; font-weight:700; font-size:0.7rem;">Backup</button>
     </div>
 
     <main id="view-habits" class="tab-content active">
       <div class="card">
         <div class="card-title">
-          <span>🌿 Hábitos de Hoje</span>
+          <span>🌿 Checklist Diário</span>
           <input type="date" id="habit-date" class="input" style="width: auto; padding: 6px 10px; margin:0;" onchange="loadHabits()">
         </div>
-
         <div class="habit-item">
-          <div>
-            <strong>💧 Água</strong>
-            <p style="font-size:0.75rem; color:var(--text-muted)">Meta: 8 copos</p>
-          </div>
+          <div><strong>💧 Água</strong><p style="font-size:0.7rem; color:var(--text-muted)">Meta: 8 copos</p></div>
           <div class="counter-box">
             <button class="btn-icon" onclick="updateHabitCount('water', -1)">-</button>
-            <span id="count-water" style="font-weight:bold; min-width:20px; text-align:center;">0</span>
+            <span id="count-water" style="font-weight:700;">0</span>
             <button class="btn-icon" onclick="updateHabitCount('water', 1)">+</button>
           </div>
         </div>
-
         <div class="habit-item">
-          <div>
-            <strong>🛌 Sono</strong>
-            <p style="font-size:0.75rem; color:var(--text-muted)">Horas dormidas</p>
-          </div>
+          <div><strong>🛌 Sono</strong><p style="font-size:0.7rem; color:var(--text-muted)">Horas dormidas</p></div>
           <div class="counter-box">
             <button class="btn-icon" onclick="updateHabitCount('sleep', -0.5)">-</button>
-            <span id="count-sleep" style="font-weight:bold; min-width:30px; text-align:center;">0h</span>
+            <span id="count-sleep" style="font-weight:700;">0h</span>
             <button class="btn-icon" onclick="updateHabitCount('sleep', 0.5)">+</button>
           </div>
         </div>
+        <div class="habit-item"><div><strong>🧘‍♀️ Alongamento</strong></div><input type="checkbox" id="check-stretch" style="width:20px; height:20px;" onchange="saveHabits()"></div>
+        <div class="habit-item"><div><strong>💩 Intestino</strong></div><input type="checkbox" id="check-poop" style="width:20px; height:20px;" onchange="saveHabits()"></div>
+        <div class="habit-item"><div><strong>🥗 Dieta Limpa</strong></div><input type="checkbox" id="check-diet" style="width:20px; height:20px;" onchange="saveHabits()"></div>
+      </div>
+    </main>
 
-        <div class="habit-item">
-          <div><strong>🧘‍♀️ Alongamento</strong></div>
-          <input type="checkbox" id="check-stretch" style="width:22px; height:22px;" onchange="saveHabits()">
-        </div>
+    <main id="view-health" class="tab-content">
+      <div class="card">
+        <div class="card-title">💊 Log de Medicamentos</div>
+        <button class="btn-secondary" onclick="toggleModal('med', true)">+ Adicionar Medicação</button>
+        <div id="med-list" style="margin-top: 20px;"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">✨ Minhas Vitaminas</div>
+        <button class="btn-secondary" onclick="toggleModal('vit', true)">+ Registrar Vitamina</button>
+        <div id="vit-list" style="margin-top: 20px;"></div>
+      </div>
+    </main>
 
-        <div class="habit-item">
-          <div><strong>💩 Intestino</strong></div>
-          <input type="checkbox" id="check-poop" style="width:22px; height:22px;" onchange="saveHabits()">
+    <main id="view-cycle" class="tab-content">
+      <div class="card" style="border-color: rgba(236, 72, 153, 0.2);">
+        <div class="card-title" style="color: var(--pink);">🩸 Controle de Ciclo</div>
+        <div style="text-align: center; padding: 15px 0;">
+          <h2 id="cycle-day-display" style="font-size: 2.8rem; color: var(--pink); font-weight: 800;">Dia --</h2>
+          <p id="cycle-info" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Aguardando início de ciclo</p>
         </div>
-
-        <div class="habit-item">
-          <div>
-            <strong>🥗 Dieta Limpa</strong>
-            <p style="font-size:0.75rem; color:var(--text-muted)">Sem furar o plano</p>
-          </div>
-          <input type="checkbox" id="check-diet" style="width:22px; height:22px;" onchange="saveHabits()">
-        </div>
-
-        <div class="habit-item">
-          <div><strong>💊 Vitaminas</strong></div>
-          <input type="checkbox" id="check-vitamins" style="width:22px; height:22px;" onchange="saveHabits()">
-        </div>
+        <button class="btn-primary" style="background: var(--pink);" onclick="startNewCycle()">Menstruei Hoje</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Última Data</div>
+        <input type="date" id="last-cycle-date" class="input" onchange="setCustomCycleDate()">
       </div>
     </main>
 
     <main id="view-reminders" class="tab-content">
       <div class="card">
-        <div class="card-title">Novo Lembrete</div>
-        <input type="text" id="rem-title" class="input" placeholder="Ex: Retorno Dermatologista">
-        <div class="flex-row">
-          <input type="date" id="rem-date" class="input">
-          <select id="rem-type" class="input">
-            <option value="Consulta">Consulta</option>
-            <option value="Exame">Exame</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </div>
-        <button class="btn-primary" onclick="addReminder()">Adicionar Lembrete</button>
+        <div class="card-title">📅 Novo Lembrete</div>
+        <input type="text" id="rem-title" class="input" placeholder="Ex: Consulta Nutricionista">
+        <input type="date" id="rem-date" class="input">
+        <button class="btn-primary" onclick="addReminder()">Salvar Lembrete</button>
       </div>
-
-      <div class="card">
-        <div class="card-title">Próximos Compromissos</div>
-        <div id="reminders-list"></div>
-      </div>
-    </main>
-
-    <main id="view-cycle" class="tab-content">
-      <div class="card" style="border-color: rgba(236, 72, 153, 0.4);">
-        <div class="card-title" style="color: var(--pink);">🩸 Status do Ciclo</div>
-        <div style="text-align: center; padding: 10px 0;">
-          <p style="color: var(--text-muted); font-size: 0.875rem;">Dia atual do ciclo</p>
-          <h2 id="cycle-day-display" style="font-size: 2.5rem; font-weight: 800; margin: 4px 0; color:var(--pink);">Dia --</h2>
-          <p id="cycle-info" style="font-size: 0.875rem; color: var(--text-muted);">Inicie um ciclo para monitorar</p>
-        </div>
-        <button class="btn-primary" style="background-color: var(--pink);" onclick="startNewCycle()">Menstruei Hoje</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">Ajustar Manualmente</div>
-        <label style="font-size:0.875rem; color:var(--text-muted)">Data de início do último ciclo:</label>
-        <input type="date" id="last-cycle-date" class="input" onchange="setCustomCycleDate()">
-      </div>
+      <div id="reminders-list"></div>
     </main>
 
     <main id="view-stock" class="tab-content">
       <div class="card">
-        <div class="card-title">Adicionar ao Estoque</div>
-        <div class="flex-row">
-          <input type="text" id="stock-item-name" class="input" placeholder="Ex: Whey, Sabonete facial...">
-          <select id="stock-item-status" class="input" style="width:140px;">
+        <div class="card-title">🛒 Lista de Compras</div>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="stock-name" class="input" style="margin-top:0;" placeholder="Item...">
+          <select id="stock-status" class="input" style="width:130px; margin-top:0;">
             <option value="Faltando">🚨 Faltando</option>
             <option value="Acabando">⚠️ Acabando</option>
           </select>
         </div>
-        <button class="btn-primary" onclick="addStockItem()">Registrar Item</button>
+        <button class="btn-primary" onclick="addStockItem()">Adicionar</button>
       </div>
-
-      <div class="card">
-        <div class="card-title">Lista de Necessidades</div>
-        <div id="stock-list"></div>
-      </div>
+      <div id="stock-list"></div>
     </main>
   </div>
 
   <nav class="nav-bar">
-    <button class="nav-item active" onclick="switchTab('habits', this)">
-      <span class="nav-icon">🌿</span>
-      <span>Hábitos</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('reminders', this)">
-      <span class="nav-icon">📅</span>
-      <span>Lembretes</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('cycle', this)">
-      <span class="nav-icon">🩸</span>
-      <span>Ciclo</span>
-    </button>
-    <button class="nav-item" onclick="switchTab('stock', this)">
-      <span class="nav-icon">🛒</span>
-      <span>Estoque</span>
-    </button>
+    <button class="nav-item active" onclick="switchTab('habits', this)"><span class="nav-icon">🌿</span><span>Habits</span></button>
+    <button class="nav-item" onclick="switchTab('health', this)"><span class="nav-icon">💊</span><span>Saúde</span></button>
+    <button class="nav-item" onclick="switchTab('cycle', this)"><span class="nav-icon">🩸</span><span>Ciclo</span></button>
+    <button class="nav-item" onclick="switchTab('reminders', this)"><span class="nav-icon">📅</span><span>Agenda</span></button>
+    <button class="nav-item" onclick="switchTab('stock', this)"><span class="nav-icon">🛒</span><span>Stock</span></button>
   </nav>
 
-  <div id="modal-backup" class="modal-overlay" onclick="if(event.target===this) toggleModal(false)">
+  <div id="modal-med" class="modal-overlay" onclick="if(event.target===this) toggleModal('med', false)">
     <div class="modal-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h3 style="font-size:1.2rem; font-weight:700;">⚙️ Sistema de Backup</h3>
-        <button onclick="toggleModal(false)" style="font-size:1.2rem; color:var(--text-muted)">✕</button>
+      <h3 style="margin-bottom:15px;">💊 Nova Medicação</h3>
+      <input type="text" id="med-name" class="input" placeholder="Nome do remédio">
+      <div style="display:flex; gap:10px;">
+        <div style="flex:1;"><label style="font-size:0.7rem; color:var(--text-muted);">Início</label><input type="date" id="med-start" class="input"></div>
+        <div style="flex:1;"><label style="font-size:0.7rem; color:var(--text-muted);">Fim (Previsão)</label><input type="date" id="med-end" class="input"></div>
       </div>
-      
-      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">
-        Salve seus dados em JSON ou restaure um backup anterior.
-      </p>
+      <input type="text" id="med-reason" class="input" placeholder="Motivo (Ex: Dor de cabeça)">
+      <textarea id="med-notes" class="input" placeholder="Notas e observações..." rows="3"></textarea>
+      <button class="btn-primary" onclick="addMedication()">Salvar no Log</button>
+    </div>
+  </div>
 
-      <div style="margin-bottom:20px; background:var(--bg-input); padding:12px; border-radius:12px; border:1px solid var(--border-color);">
-        <div style="font-size:0.75rem; color:var(--text-muted)">Último backup realizado:</div>
-        <strong id="modal-last-date" style="font-size:0.9rem; color:var(--success)">Nunca</strong>
-      </div>
+  <div id="modal-vit" class="modal-overlay" onclick="if(event.target===this) toggleModal('vit', false)">
+    <div class="modal-box">
+      <h3 style="margin-bottom:15px;">✨ Nova Vitamina</h3>
+      <input type="text" id="vit-name" class="input" placeholder="Nome da Vitamina">
+      <input type="text" id="vit-dose" class="input" placeholder="Valor/Dosagem (Ex: 500mg, 1 gota)">
+      <input type="text" id="vit-period" class="input" placeholder="Período/Frequência (Ex: Todo dia cedo)">
+      <textarea id="vit-notes" class="input" placeholder="Notas..." rows="2"></textarea>
+      <button class="btn-primary" onclick="addVitamin()">Registrar</button>
+    </div>
+  </div>
 
-      <label style="font-size:0.85rem; font-weight:600; display:block; margin-bottom:4px;">Lembrar-me a cada:</label>
-      <select id="backup-freq" class="input" style="margin-top:0; margin-bottom:20px;" onchange="saveBackupFreq()">
-        <option value="7">7 dias</option>
-        <option value="15">15 dias</option>
-        <option value="30">30 dias</option>
-      </select>
-
-      <button class="btn-primary" style="margin-top:0;" onclick="exportBackup()">📥 Baixar Backup (.json)</button>
-      <button class="btn-secondary" onclick="document.getElementById('file-input').click()">📤 Restaurar Backup</button>
+  <div id="modal-backup" class="modal-overlay" onclick="if(event.target===this) toggleModal('backup', false)">
+    <div class="modal-box">
+      <h3>⚙️ Configurações</h3>
+      <div style="margin: 15px 0; font-size: 0.85rem; color:var(--text-muted);">Mantenha seus dados seguros exportando seu arquivo de backup periodicamente.</div>
+      <button class="btn-primary" onclick="exportBackup()">Exportar Backup (.json)</button>
+      <button class="btn-secondary" onclick="document.getElementById('file-input').click()">Restaurar Backup</button>
       <input type="file" id="file-input" accept=".json" style="display:none" onchange="importBackup(event)">
+      <button class="btn-secondary" style="background:#FEE2E2; color:#B91C1C; margin-top:30px;" onclick="if(confirm('Apagar TUDO?')) { localStorage.clear(); location.reload(); }">Limpar Tudo</button>
     </div>
   </div>
 
   <script>
-    // ── REGISTRO DO SERVICE WORKER (PWA) ──
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW falhou:', err));
-      });
-    }
-
-    // ── LÓGICA DE INSTALAÇÃO (PWA BANNER) ──
-    let deferredPrompt;
-    const installBanner = document.getElementById('install-banner');
-    const btnInstall = document.getElementById('btn-install');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBanner.style.display = 'flex';
-    });
-
-    btnInstall.addEventListener('click', async () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') installBanner.style.display = 'none';
-        deferredPrompt = null;
-      }
-    });
-
-    window.addEventListener('appinstalled', () => {
-      installBanner.style.display = 'none';
-    });
-
     // ── NAVEGAÇÃO ──
     function switchTab(tabId, btnElement) {
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -398,102 +315,42 @@
       btnElement.classList.add('active');
     }
 
-    // ── LOCALSTORAGE ──
+    // ── BANCO DE DADOS ──
     let db = {
-      habits: JSON.parse(localStorage.getItem('dc_habits')) || {},
-      reminders: JSON.parse(localStorage.getItem('dc_reminders')) || [],
-      cycleStartDate: localStorage.getItem('dc_cycle_start') || '',
-      stock: JSON.parse(localStorage.getItem('dc_stock')) || []
+      habits: JSON.parse(localStorage.getItem('myss_habits')) || {},
+      reminders: JSON.parse(localStorage.getItem('myss_reminders')) || [],
+      cycleStartDate: localStorage.getItem('myss_cycle_start') || '',
+      stock: JSON.parse(localStorage.getItem('myss_stock')) || [],
+      medications: JSON.parse(localStorage.getItem('myss_meds')) || [],
+      vitamins: JSON.parse(localStorage.getItem('myss_vits')) || []
     };
 
     function saveData(key, data) {
-      localStorage.setItem('dc_' + key, typeof data === 'string' ? data : JSON.stringify(data));
+      localStorage.setItem('myss_' + key, typeof data === 'string' ? data : JSON.stringify(data));
     }
 
-    // ── BACKUP ──
-    function toggleModal(show) {
-      document.getElementById('modal-backup').classList.toggle('active', show);
-      if(show) checkBackupStatus();
-    }
-
-    function checkBackupStatus() {
-      const lastBackup = parseInt(localStorage.getItem('dc_last_backup')) || 0;
-      const freqDays = parseInt(localStorage.getItem('dc_backup_freq')) || 7;
-      document.getElementById('backup-freq').value = freqDays;
-
-      const banner = document.getElementById('backup-banner');
-      const labelLast = document.getElementById('modal-last-date');
-
-      if (lastBackup > 0) {
-        labelLast.innerText = new Date(lastBackup).toLocaleDateString('pt-BR') + ' às ' + new Date(lastBackup).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-        const daysPassed = (Date.now() - lastBackup) / (1000 * 60 * 60 * 24);
-        banner.style.display = (daysPassed >= freqDays) ? 'flex' : 'none';
-      } else {
-        labelLast.innerText = 'Nenhum backup registrado';
-        labelLast.style.color = 'var(--warning)';
-        banner.style.display = 'flex';
-      }
-    }
-
-    function saveBackupFreq() {
-      localStorage.setItem('dc_backup_freq', document.getElementById('backup-freq').value);
-      checkBackupStatus();
-    }
-
-    function exportBackup() {
-      const backupData = {
-        habits: db.habits, reminders: db.reminders,
-        cycleStartDate: db.cycleStartDate, stock: db.stock, exportedAt: Date.now()
-      };
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "DailyCare_Backup_" + new Date().toISOString().split('T')[0] + ".json");
-      document.body.appendChild(downloadAnchor); downloadAnchor.click(); downloadAnchor.remove();
-
-      localStorage.setItem('dc_last_backup', Date.now());
-      checkBackupStatus(); toggleModal(false);
-    }
-
-    function importBackup(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          if (importedData && typeof importedData === 'object') {
-            db.habits = importedData.habits || {}; db.reminders = importedData.reminders || [];
-            db.cycleStartDate = importedData.cycleStartDate || ''; db.stock = importedData.stock || [];
-            saveData('habits', db.habits); saveData('reminders', db.reminders);
-            saveData('cycle_start', db.cycleStartDate); saveData('stock', db.stock);
-            localStorage.setItem('dc_last_backup', Date.now());
-            initHabits(); renderReminders(); initCycle(); renderStock();
-            alert("🎉 Dados restaurados com sucesso!"); toggleModal(false);
-          } else throw new Error();
-        } catch(err) { alert("❌ Erro ao ler o arquivo de backup."); }
-      };
-      reader.readAsText(file); event.target.value = '';
+    function toggleModal(id, show) {
+      document.getElementById('modal-' + id).classList.toggle('active', show);
     }
 
     // ── HÁBITOS ──
     let currentDateKey = '';
     function initHabits() {
       const today = new Date().toISOString().split('T')[0];
-      document.getElementById('habit-date').value = today; loadHabits();
+      document.getElementById('habit-date').value = today;
+      loadHabits();
     }
     function loadHabits() {
       currentDateKey = document.getElementById('habit-date').value;
-      const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false, vitamins: false };
+      const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false };
       document.getElementById('count-water').innerText = dayData.water;
       document.getElementById('count-sleep').innerText = dayData.sleep + 'h';
       document.getElementById('check-stretch').checked = dayData.stretch;
       document.getElementById('check-poop').checked = dayData.poop;
       document.getElementById('check-diet').checked = dayData.diet;
-      document.getElementById('check-vitamins').checked = dayData.vitamins;
     }
     function updateHabitCount(type, amount) {
-      const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false, vitamins: false };
+      const dayData = db.habits[currentDateKey] || { water: 0, sleep: 0, stretch: false, poop: false, diet: false };
       dayData[type] = Math.max(0, dayData[type] + amount);
       db.habits[currentDateKey] = dayData; saveData('habits', db.habits); loadHabits();
     }
@@ -502,30 +359,64 @@
       dayData.stretch = document.getElementById('check-stretch').checked;
       dayData.poop = document.getElementById('check-poop').checked;
       dayData.diet = document.getElementById('check-diet').checked;
-      dayData.vitamins = document.getElementById('check-vitamins').checked;
       db.habits[currentDateKey] = dayData; saveData('habits', db.habits);
     }
 
-    // ── LEMBRETES ──
-    function renderReminders() {
-      const list = document.getElementById('reminders-list');
-      if (!db.reminders.length) return list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Nenhum lembrete cadastrado.</p>';
-      const sorted = [...db.reminders].sort((a,b) => new Date(a.date) - new Date(b.date));
-      list.innerHTML = sorted.map((rem) => {
-        const dateStr = rem.date ? new Date(rem.date + 'T00:00:00').toLocaleDateString('pt-BR') : 'Sem data';
-        return `<div class="list-item"><div><strong style="font-size:0.9rem; display:block;">${rem.title}</strong><span style="font-size:0.75rem; color:var(--text-muted)">📅 ${dateStr} • ${rem.type}</span></div><button onclick="deleteReminder('${rem.id}')" style="color:var(--danger); font-size:1.1rem;">🗑</button></div>`;
-      }).join('');
+    // ── SAÚDE: MEDICAÇÃO ──
+    function renderMedications() {
+      const list = document.getElementById('med-list');
+      if (!db.medications.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Nenhum medicamento registrado.</p>'; return; }
+      list.innerHTML = db.medications.map(m => `
+        <div class="log-item">
+          <div class="log-header">
+            <span class="log-name">${m.name}</span>
+            <button onclick="deleteMed('${m.id}')" style="color:var(--danger); font-size:0.8rem;">🗑</button>
+          </div>
+          <div class="log-period">📅 ${new Date(m.start + 'T00:00:00').toLocaleDateString('pt-BR')} ${m.end ? 'até ' + new Date(m.end + 'T00:00:00').toLocaleDateString('pt-BR') : '(em curso)'}</div>
+          <div class="log-reason">Motivo: ${m.reason || 'Não informado'}</div>
+          ${m.notes ? `<div class="log-notes">${m.notes}</div>` : ''}
+        </div>
+      `).join('');
     }
-    function addReminder() {
-      const title = document.getElementById('rem-title').value.trim();
-      const date = document.getElementById('rem-date').value;
-      const type = document.getElementById('rem-type').value;
-      if (!title) return alert('Digite o título!');
-      db.reminders.push({ id: Date.now().toString(), title, date, type });
-      saveData('reminders', db.reminders);
-      document.getElementById('rem-title').value = ''; document.getElementById('rem-date').value = ''; renderReminders();
+    function addMedication() {
+      const name = document.getElementById('med-name').value;
+      if (!name) return alert('Dê um nome ao remédio');
+      db.medications.unshift({
+        id: Date.now().toString(), name, reason: document.getElementById('med-reason').value,
+        start: document.getElementById('med-start').value, end: document.getElementById('med-end').value,
+        notes: document.getElementById('med-notes').value
+      });
+      saveData('meds', db.medications); renderMedications(); toggleModal('med', false);
+      ['med-name','med-reason','med-start','med-end','med-notes'].forEach(i => document.getElementById(i).value = '');
     }
-    function deleteReminder(id) { db.reminders = db.reminders.filter(r => r.id !== id); saveData('reminders', db.reminders); renderReminders(); }
+    function deleteMed(id) { if(confirm('Excluir este log?')) { db.medications = db.medications.filter(m => m.id !== id); saveData('meds', db.medications); renderMedications(); } }
+
+    // ── SAÚDE: VITAMINAS ──
+    function renderVitamins() {
+      const list = document.getElementById('vit-list');
+      if (!db.vitamins.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Nenhuma vitamina registrada.</p>'; return; }
+      list.innerHTML = db.vitamins.map(v => `
+        <div class="log-item" style="border-left: 4px solid var(--secondary);">
+          <div class="log-header">
+            <span class="log-name">${v.name} <span style="font-size:0.75rem; color:var(--secondary);">(${v.dose})</span></span>
+            <button onclick="deleteVit('${v.id}')" style="color:var(--danger); font-size:0.8rem;">🗑</button>
+          </div>
+          <div class="log-period" style="color:var(--secondary);">Frequência: ${v.period || 'Não informada'}</div>
+          ${v.notes ? `<div class="log-notes">${v.notes}</div>` : ''}
+        </div>
+      `).join('');
+    }
+    function addVitamin() {
+      const name = document.getElementById('vit-name').value;
+      if (!name) return alert('Dê um nome');
+      db.vitamins.unshift({
+        id: Date.now().toString(), name, dose: document.getElementById('vit-dose').value,
+        period: document.getElementById('vit-period').value, notes: document.getElementById('vit-notes').value
+      });
+      saveData('vits', db.vitamins); renderVitamins(); toggleModal('vit', false);
+      ['vit-name','vit-dose','vit-period','vit-notes'].forEach(i => document.getElementById(i).value = '');
+    }
+    function deleteVit(id) { if(confirm('Excluir registro?')) { db.vitamins = db.vitamins.filter(v => v.id !== id); saveData('vits', db.vitamins); renderVitamins(); } }
 
     // ── CICLO ──
     function initCycle() { if (db.cycleStartDate) { document.getElementById('last-cycle-date').value = db.cycleStartDate; calculateCycle(); } }
@@ -533,41 +424,87 @@
       const today = new Date().toISOString().split('T')[0]; db.cycleStartDate = today;
       saveData('cycle_start', today); document.getElementById('last-cycle-date').value = today; calculateCycle();
     }
-    function setCustomCycleDate() {
-      const date = document.getElementById('last-cycle-date').value;
-      if (date) { db.cycleStartDate = date; saveData('cycle_start', date); calculateCycle(); }
-    }
+    function setCustomCycleDate() { const date = document.getElementById('last-cycle-date').value; if (date) { db.cycleStartDate = date; saveData('cycle_start', date); calculateCycle(); } }
     function calculateCycle() {
       if (!db.cycleStartDate) return;
       const start = new Date(db.cycleStartDate + 'T00:00:00');
-      const today = new Date(); today.setHours(0,0,0,0);
-      const diffDays = Math.ceil(Math.abs(today - start) / (1000 * 60 * 60 * 24)) + 1;
+      const diffDays = Math.ceil(Math.abs(new Date().setHours(0,0,0,0) - start) / (1000 * 60 * 60 * 24)) + 1;
       document.getElementById('cycle-day-display').innerText = `Dia ${diffDays}`;
-      const nextPeriod = new Date(start); nextPeriod.setDate(start.getDate() + 28);
-      document.getElementById('cycle-info').innerText = `Próxima estimativa: ${nextPeriod.toLocaleDateString('pt-BR')}`;
+      const next = new Date(start); next.setDate(start.getDate() + 28);
+      document.getElementById('cycle-info').innerText = `Estimativa próxima: ${next.toLocaleDateString('pt-BR')}`;
     }
+
+    // ── AGENDA ──
+    function renderReminders() {
+      const list = document.getElementById('reminders-list');
+      if (!db.reminders.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">Agenda vazia.</p>'; return; }
+      const sorted = [...db.reminders].sort((a,b) => new Date(a.date) - new Date(b.date));
+      list.innerHTML = sorted.map(rem => `
+        <div class="list-item">
+          <div><strong style="font-size:0.9rem;">${rem.title}</strong><br><span style="font-size:0.75rem; color:var(--text-muted)">📅 ${new Date(rem.date + 'T00:00:00').toLocaleDateString('pt-BR')}</span></div>
+          <button onclick="deleteReminder('${rem.id}')" style="color:var(--danger);">🗑</button>
+        </div>
+      `).join('');
+    }
+    function addReminder() {
+      const title = document.getElementById('rem-title').value.trim();
+      const date = document.getElementById('rem-date').value;
+      if (!title || !date) return alert('Preencha título e data');
+      db.reminders.push({ id: Date.now().toString(), title, date });
+      saveData('reminders', db.reminders); document.getElementById('rem-title').value = ''; renderReminders();
+    }
+    function deleteReminder(id) { db.reminders = db.reminders.filter(r => r.id !== id); saveData('reminders', db.reminders); renderReminders(); }
 
     // ── ESTOQUE ──
     function renderStock() {
       const list = document.getElementById('stock-list');
-      if (!db.stock.length) return list.innerHTML = '<p style="color:var(--text-muted); font-size:0.875rem; text-align:center;">Estoque em dia!</p>';
-      list.innerHTML = db.stock.map((item) => {
-        const tagClass = item.status === 'Faltando' ? 'tag-urgente' : 'tag-aviso';
-        return `<div class="list-item"><div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" style="width:18px; height:18px;" onchange="deleteStockItem('${item.id}')"><span style="font-size:0.9rem;">${item.name}</span></div><span class="tag ${tagClass}">${item.status}</span></div>`;
-      }).join('');
+      if (!db.stock.length) { list.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; margin-top:20px;">Tudo em estoque!</p>'; return; }
+      list.innerHTML = db.stock.map(i => `
+        <div class="list-item">
+          <div style="display:flex; align-items:center; gap:10px;"><input type="checkbox" onchange="deleteStockItem('${i.id}')"><span>${i.name}</span></div>
+          <span style="font-size:0.65rem; padding:4px 8px; border-radius:6px; background:rgba(0,0,0,0.05); font-weight:700;">${i.status}</span>
+        </div>
+      `).join('');
     }
     function addStockItem() {
-      const name = document.getElementById('stock-item-name').value.trim();
-      const status = document.getElementById('stock-item-status').value;
+      const name = document.getElementById('stock-name').value.trim();
       if (!name) return;
-      db.stock.push({ id: Date.now().toString(), name, status }); saveData('stock', db.stock);
-      document.getElementById('stock-item-name').value = ''; renderStock();
+      db.stock.push({ id: Date.now().toString(), name, status: document.getElementById('stock-status').value });
+      saveData('stock', db.stock); document.getElementById('stock-name').value = ''; renderStock();
     }
     function deleteStockItem(id) { setTimeout(() => { db.stock = db.stock.filter(i => i.id !== id); saveData('stock', db.stock); renderStock(); }, 300); }
 
-    window.onload = function() { initHabits(); renderReminders(); initCycle(); renderStock(); checkBackupStatus(); };
+    // ── BACKUP ──
+    function exportBackup() {
+      const data = JSON.stringify(db);
+      const blob = new Blob([data], {type: 'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `MySS_Backup_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      localStorage.setItem('myss_last_backup', Date.now());
+      document.getElementById('backup-banner').style.display = 'none';
+      toggleModal('backup', false);
+    }
+    function importBackup(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          Object.keys(imported).forEach(k => saveData(k.replace('myss_',''), imported[k]));
+          alert("Backup restaurado! O app irá recarregar."); location.reload();
+        } catch(err) { alert("Erro ao importar backup."); }
+      };
+      reader.readAsText(file);
+    }
 
-    navigator.serviceWorker?.register?.('sw.js');
+    function checkBackupStatus() {
+      const last = parseInt(localStorage.getItem('myss_last_backup')) || 0;
+      if (Date.now() - last > (1000 * 60 * 60 * 24 * 7)) document.getElementById('backup-banner').style.display = 'flex';
+    }
+
+    window.onload = () => { initHabits(); renderMedications(); renderVitamins(); initCycle(); renderReminders(); renderStock(); checkBackupStatus(); };
   </script>
 </body>
 </html>
