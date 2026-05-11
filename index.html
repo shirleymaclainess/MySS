@@ -566,6 +566,8 @@
     function deleteStockItem(id) { setTimeout(() => { db.stock = db.stock.filter(i => i.id !== id); saveData('stock', db.stock); renderStock(); }, 300); }
 
     window.onload = function() { initHabits(); renderReminders(); initCycle(); renderStock(); checkBackupStatus(); };
+
+    navigator.serviceWorker?.register?.('sw.js');
   </script>
 </body>
 </html>
