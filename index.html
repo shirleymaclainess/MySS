@@ -431,16 +431,41 @@ window.addEventListener('beforeinstallprompt',e=>{
 });
 window.addEventListener('appinstalled',()=>{document.getElementById('install-banner').style.display='none';});
 
-// registrar service worker inline para PWA
-const swCode=`
-self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
-self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>new Response(''))));
-`;
-if('serviceWorker' in navigator){
-  const blob=new Blob([swCode],{type:'application/javascript'});
-  const swUrl=URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl).catch(()=>{});
+// Registrar service worker com lógica de atualização
+if ('serviceWorker' in navigator) {
+  // Criamos um nome de cache único baseado no tempo para forçar o refresh
+  const swCode = `
+    const CACHE_NAME = 'myss-v${Date.now()}';
+    self.addEventListener('install', e => self.skipWaiting());
+    self.addEventListener('activate', e => {
+      e.waitUntil(clients.claim());
+      // Limpa caches antigos
+      e.waitUntil(
+        caches.keys().then(keys => Promise.all(
+          keys.map(key => caches.delete(key))
+        ))
+      );
+    });
+    self.addEventListener('fetch', e => {
+      // Estratégia: Tenta rede, se falhar ou demorar, não trava o app
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `;
+
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  
+  navigator.serviceWorker.register(swUrl).then(reg => {
+    // Se encontrar uma atualização, recarrega a página
+    reg.onupdatefound = () => {
+      const installingWorker = reg.installing;
+      installingWorker.onstatechange = () => {
+        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          window.location.reload();
+        }
+      };
+    };
+  }).catch(() => {});
 }
 
 // ── NOTIFICATIONS ──
