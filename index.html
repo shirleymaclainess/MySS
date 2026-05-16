@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySS - Painel Pessoal</title>
+<meta name="theme-color" content="#D946EF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MySS">
+
+<link rel="manifest" href="manifest.json">
+
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+:root{
+  --bg:#F8FAFC;--card:#fff;--border:#E2E8F0;
+  --accent:#D946EF;--accent-h:#C026D3;--secondary:#8B5CF6;
+  --text:#1E293B;--muted:#64748B;
+  --danger:#EF4444;--success:#10B981;--warning:#F59E0B;--pink:#EC4899;
+  --r:22px;--r-sm:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.5;padding-bottom:90px;}
+button{border:none;background:none;color:inherit;font-family:inherit;cursor:pointer;transition:.2s;}
+input,select,textarea{font-family:inherit;color:inherit;outline:none;}
+
+.container{max-width:600px;margin:0 auto;padding:20px;}
+
+/* header */
+.header{text-align:center;margin-bottom:24px;position:relative;padding:10px 0;}
+.header h1{font-size:1.85rem;font-weight:800;background:linear-gradient(90deg,var(--accent),var(--secondary));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.header p{color:var(--muted);font-size:.85rem;margin-top:2px;font-weight:500;}
+.btn-settings{position:absolute;right:0;top:12px;background:var(--card);border:1px solid var(--border);width:42px;height:42px;border-radius:14px;font-size:1.2rem;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+
+/* nav */
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 5px;z-index:100;max-width:600px;margin:0 auto;box-shadow:0 -4px 15px rgba(0,0,0,.03);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.65rem;color:var(--muted);font-weight:600;padding:6px 8px;border-radius:14px;flex:1;}
+.nav-item.active{color:var(--accent);background:rgba(217,70,239,.08);}
+.nav-icon{font-size:1.2rem;}
+.tab-content{display:none;animation:fadeIn .3s ease;}
+.tab-content.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* card */
+.card{background:var(--card);border-radius:var(--r);padding:20px;margin-bottom:16px;border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,.02);}
+.card-title{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;}
+
+/* inputs */
+.input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;color:var(--text);margin-top:8px;font-size:.9rem;}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(217,70,239,.1);}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+
+/* buttons */
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--secondary));color:#fff;padding:14px 20px;border-radius:16px;font-weight:700;width:100%;font-size:.9rem;margin-top:12px;display:block;text-align:center;}
+.btn-secondary{background:#F1F5F9;color:var(--text);padding:12px 20px;border-radius:14px;font-weight:600;width:100%;font-size:.85rem;margin-top:10px;}
+.btn-danger{background:rgba(239,68,68,.1);color:var(--danger);padding:8px 14px;border-radius:10px;font-size:.8rem;font-weight:600;}
+.btn-sm{padding:8px 14px;border-radius:10px;font-size:.8rem;font-weight:600;background:#F1F5F9;}
+
+/* badges */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.75rem;font-weight:600;}
+.badge-accent{background:rgba(217,70,239,.1);color:var(--accent);}
+.badge-success{background:rgba(16,185,129,.1);color:var(--success);}
+.badge-warning{background:rgba(245,158,11,.1);color:var(--warning);}
+.badge-danger{background:rgba(239,68,68,.1);color:var(--danger);}
+.badge-muted{background:#F1F5F9;color:var(--muted);}
+
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(4px);display:none;justify-content:center;align-items:flex-end;z-index:200;padding:16px;}
+.modal-overlay.active{display:flex;}
+@media(min-width:600px){.modal-overlay{align-items:center;}}
+.modal-box{background:#fff;border-radius:28px 28px 0 0;padding:24px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;}
+@media(min-width:600px){.modal-box{border-radius:28px;}}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.modal-header h3{font-size:1.1rem;font-weight:700;}
+.modal-close{font-size:1.3rem;color:var(--muted);padding:4px 8px;}
+
+/* log items */
+.log-item{padding:14px;border-radius:16px;background:#F8FAFC;border:1px solid var(--border);margin-bottom:10px;}
+.log-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.log-name{font-weight:700;}
+.log-meta{font-size:.75rem;color:var(--muted);font-weight:600;}
+
+/* checklist */
+.check-item{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid #F1F5F9;}
+.check-item:last-child{border-bottom:none;}
+.check-left{display:flex;align-items:center;gap:12px;}
+.check-emoji{font-size:1.3rem;width:32px;text-align:center;}
+.check-info{}
+.check-name{font-weight:600;font-size:.9rem;}
+.check-meta{font-size:.75rem;color:var(--muted);margin-top:1px;}
+.check-right{display:flex;align-items:center;gap:8px;}
+.toggle{width:48px;height:26px;border-radius:13px;background:#E2E8F0;position:relative;cursor:pointer;transition:.2s;border:none;flex-shrink:0;}
+.toggle.on{background:var(--accent);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.toggle.on::after{left:25px;}
+.counter-box{display:flex;align-items:center;gap:10px;}
+.btn-count{background:#F1F5F9;width:34px;height:34px;border-radius:10px;font-weight:700;font-size:1.1rem;display:flex;align-items:center;justify-content:center;}
+.count-val{font-weight:700;font-size:1rem;min-width:28px;text-align:center;}
+
+/* cycle */
+.cycle-day{font-size:3.5rem;font-weight:800;background:linear-gradient(135deg,var(--pink),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;line-height:1;}
+.cycle-info{text-align:center;color:var(--muted);font-size:.85rem;margin-top:4px;}
+.cycle-phase{display:inline-block;padding:6px 16px;border-radius:20px;font-size:.8rem;font-weight:700;margin-top:8px;}
+.phase-menstrual{background:rgba(236,72,153,.1);color:var(--pink);}
+.phase-folicular{background:rgba(139,92,246,.1);color:var(--secondary);}
+.phase-ovulacao{background:rgba(16,185,129,.1);color:var(--success);}
+.phase-lutea{background:rgba(245,158,11,.1);color:var(--warning);}
+
+/* stock */
+.stock-item{display:flex;align-items:center;justify-content:space-between;padding:12px;background:#F8FAFC;border:1px solid var(--border);border-radius:14px;margin-bottom:8px;}
+.stock-item.urgent{border-color:var(--danger);background:rgba(239,68,68,.04);}
+.stock-left{display:flex;align-items:center;gap:10px;flex:1;}
+.stock-info{flex:1;}
+.stock-name{font-weight:600;font-size:.9rem;}
+.stock-meta{font-size:.75rem;color:var(--muted);margin-top:2px;}
+
+/* sleep log */
+.sleep-entry{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F8FAFC;border:1px solid var(--border);border-radius:12px;margin-bottom:8px;}
+.sleep-date{font-weight:600;font-size:.85rem;}
+.sleep-times{font-size:.8rem;color:var(--muted);}
+.sleep-dur{font-size:.85rem;font-weight:700;color:var(--secondary);}
+
+/* alert banner */
+.alert-banner{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:16px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:.85rem;font-weight:600;color:var(--danger);}
+
+/* checklist log visual */
+.cl-log-day{background:#F8FAFC;border:1px solid var(--border);border-radius:16px;padding:14px;margin-bottom:10px;}
+.cl-log-date{font-weight:700;font-size:.85rem;margin-bottom:10px;}
+.cl-dots{display:flex;flex-wrap:wrap;gap:6px;}
+.cl-dot{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.65rem;color:var(--muted);}
+.cl-dot span.dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+.cl-dot span.dot{
+  position:relative;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  transition:.2s;
+}
+
+.cl-dot span.dot.done{
+  background:linear-gradient(135deg,#10B981,#34D399);
+  color:#fff;
+  box-shadow:0 4px 10px rgba(16,185,129,.25);
+}
+
+.cl-dot span.dot.done::after{
+  content:'✓';
+  position:absolute;
+  top:-4px;
+  right:-2px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#fff;
+  color:#10B981;
+  font-size:.7rem;
+  font-weight:900;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:2px solid #10B981;
+}
+
+.cl-dot span.dot.miss{
+  background:#E5E7EB;
+  color:#94A3B8;
+  filter:grayscale(1);
+  opacity:.7;
+}
+
+/* install banner */
+.install-banner{background:linear-gradient(135deg,rgba(217,70,239,.1),rgba(139,92,246,.1));border:1px solid rgba(217,70,239,.2);border-radius:16px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.install-banner-text{font-size:.82rem;font-weight:600;color:var(--accent);}
+.install-banner-sub{font-size:.75rem;color:var(--muted);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>MySS ✨</h1>
+    <p id="greeting">Olá! Bem-vinda de volta.</p>
+    <button class="btn-settings" onclick="toggleModal('config',true)">⚙️</button>
+  </div>
+
+  <!-- install banner -->
+  <div class="install-banner" id="install-banner" style="display:none">
+    <div>
+      <div class="install-banner-text">📲 Instalar MySS como app</div>
+      <div class="install-banner-sub">Acesse mais rápido direto da tela inicial</div>
+    </div>
+    <button class="btn-primary" style="width:auto;margin:0;padding:10px 16px;font-size:.82rem" id="install-btn">Instalar</button>
+  </div>
+
+  <!-- stock urgent alerts -->
+  <div id="stock-alerts"></div>
+
+  <!-- ═══ CHECKLIST ═══ -->
+  <div id="view-check" class="tab-content active">
+    <div class="card">
+      <div class="card-title">
+        📋 Checklist diário
+        <div style="display:flex;gap:8px">
+          <input type="date" id="check-date" class="input" style="width:auto;margin:0;padding:8px 10px;font-size:.8rem">
+          <button class="btn-sm" onclick="toggleModal('check-edit',true)">+ Item</button>
+        </div>
+      </div>
+      <div id="check-list"></div>
+      <button class="btn-primary" onclick="saveCheckDay()">💾 Salvar dia</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📅 Histórico visual</div>
+      <div id="check-log"></div>
+    </div>
+  </div>
+
+  <!-- ═══ CICLO ═══ -->
+  <div id="view-cycle" class="tab-content">
+    <div class="card" style="text-align:center">
+      <div class="card-title" style="justify-content:center">🩸 Controle do ciclo</div>
+      <div class="cycle-day" id="cycle-day-num">--</div>
+      <div class="cycle-info" id="cycle-info">Nenhum ciclo registrado</div>
+      <div id="cycle-phase-badge"></div>
+      <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" style="width:auto;padding:11px 20px" onclick="startCycle()">🩸 Iniciar menstruação</button>
+        <button class="btn-sm" onclick="toggleModal('cycle-end',true)" style="background:rgba(236,72,153,.1);color:var(--pink)">✓ Registrar fim</button>
+        <button class="btn-sm" onclick="toggleModal('cycle-custom',true)">📅 Definir data</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔮 Previsão próximo ciclo</div>
+      <div id="cycle-prediction"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Histórico de ciclos</div>
+      <div id="cycle-history"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SONO ═══ -->
+  <div id="view-sleep" class="tab-content">
+    <div class="card">
+      <div class="card-title">😴 Controle de sono</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div>
+          <div style="font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:6px">🌙 Dormi às</div>
+          <input type="time" id="sleep-time" class="input" style="margin:0">
+        </div>
+        <div>
+          <div style="font-size:.8rem;color:var(--muted);font-weight:600;margin-bottom:6px">☀️ Acordei às</div>
+          <input type="time" id="wake-time" class="input" style="margin:0">
+        </div>
+      </div>
+      <input type="date" id="sleep-date" class="input">
+      <textarea id="sleep-notes" class="input" placeholder="Observações (qualidade, sonhos...)" rows="2"></textarea>
+      <button class="btn-primary" onclick="saveSleepEntry()">Salvar</button>
+    </div>
+    <div class="card">
+      <div class="card-title">
+        ⏰ Lembrete de dormir
+        <span id="sleep-reminder-badge" class="badge badge-muted">desativado</span>
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-end">
+        <div style="flex:1"><input type="time" id="sleep-reminder-time" class="input" style="margin:0"></div>
+        <button class="btn-primary" style="width:auto;margin:0;padding:12px 18px" onclick="saveSleepReminder()">Ativar</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Histórico de sono</div>
+      <div id="sleep-log"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SAÚDE ═══ -->
+  <div id="view-health" class="tab-content">
+    <div class="card">
+      <div class="card-title">💊 Medicamentos <button class="btn-sm" onclick="toggleModal('med',true)">+ Novo</button></div>
+      <div id="med-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">✨ Vitaminas <button class="btn-sm" onclick="toggleModal('vit',true)">+ Nova</button></div>
+      <div id="vit-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ LEMBRETES ═══ -->
+  <div id="view-remind" class="tab-content">
+    <div class="card">
+      <div class="card-title">🔔 Lembretes</div>
+      <input type="text" id="rem-title" class="input" placeholder="Título do lembrete">
+      <input type="datetime-local" id="rem-date" class="input">
+      <button class="btn-primary" onclick="addReminder()">Adicionar lembrete</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Ativos</div>
+      <div id="reminders-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ ESTOQUE ═══ -->
+  <div id="view-stock" class="tab-content">
+    <div class="card">
+      <div class="card-title">📦 Estoque</div>
+      <input type="text" id="stock-name" class="input" placeholder="Nome do item">
+      <select id="stock-status" class="input">
+        <option value="ok">✅ Ok</option>
+        <option value="baixo">⚠️ Estoque baixo</option>
+        <option value="acabou">❌ Acabou</option>
+      </select>
+      <input type="date" id="stock-expire" class="input" placeholder="Validade (opcional)">
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.85rem;font-weight:600;cursor:pointer">
+        <input type="checkbox" id="stock-urgent" style="width:18px;height:18px;accent-color:var(--danger)"> Marcar como urgente 🚨
+      </label>
+      <button class="btn-primary" onclick="addStockItem()">Adicionar</button>
+    </div>
+    <div class="card">
+      <div id="stock-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <button class="nav-item active" onclick="switchTab('check',this)"><span class="nav-icon">📋</span>Check</button>
+  <button class="nav-item" onclick="switchTab('cycle',this)"><span class="nav-icon">🩸</span>Ciclo</button>
+  <button class="nav-item" onclick="switchTab('sleep',this)"><span class="nav-icon">😴</span>Sono</button>
+  <button class="nav-item" onclick="switchTab('health',this)"><span class="nav-icon">💊</span>Saúde</button>
+  <button class="nav-item" onclick="switchTab('remind',this)"><span class="nav-icon">🔔</span>Lembretes</button>
+  <button class="nav-item" onclick="switchTab('stock',this)"><span class="nav-icon">📦</span>Estoque</button>
+</nav>
+
+<!-- MODALS -->
+<!-- check item edit -->
+<div id="modal-check-edit" class="modal-overlay" onclick="if(event.target===this)toggleModal('check-edit',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>⚙️ Itens do checklist</h3><button class="modal-close" onclick="toggleModal('check-edit',false)">✕</button></div>
+    <div id="check-edit-list" style="margin-bottom:16px"></div>
+    <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+      <div style="font-weight:700;font-size:.9rem;margin-bottom:10px">Adicionar novo item</div>
+      <div style="display:grid;grid-template-columns:48px 1fr;gap:8px">
+        <input id="new-item-emoji" class="input" style="margin:0;text-align:center" placeholder="🌟" maxlength="2">
+        <input id="new-item-name" class="input" style="margin:0" placeholder="Nome da tarefa">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <select id="new-item-type" class="input" style="margin:0">
+          <option value="check">✅ Checkbox</option>
+          <option value="count">🔢 Contador</option>
+        </select>
+        <input id="new-item-meta" class="input" style="margin:0" placeholder="Meta (ex: 8 copos)">
+      </div>
+      <button class="btn-primary" onclick="addCheckItem()">Adicionar item</button>
+    </div>
+  </div>
+</div>
+
+<!-- cycle end -->
+<div id="modal-cycle-end" class="modal-overlay" onclick="if(event.target===this)toggleModal('cycle-end',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✓ Fim da menstruação</h3><button class="modal-close" onclick="toggleModal('cycle-end',false)">✕</button></div>
+    <input type="date" id="cycle-end-date" class="input">
+    <textarea id="cycle-end-notes" class="input" placeholder="Observações (cólicas, fluxo...)" rows="3"></textarea>
+    <button class="btn-primary" onclick="endCycle()">Registrar fim</button>
+  </div>
+</div>
+
+<!-- cycle custom -->
+<div id="modal-cycle-custom" class="modal-overlay" onclick="if(event.target===this)toggleModal('cycle-custom',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>📅 Definir início do ciclo</h3><button class="modal-close" onclick="toggleModal('cycle-custom',false)">✕</button></div>
+    <input type="date" id="cycle-custom-date" class="input">
+    <button class="btn-primary" onclick="setCustomCycle()">Salvar</button>
+  </div>
+</div>
+
+<!-- med -->
+<div id="modal-med" class="modal-overlay" onclick="if(event.target===this)toggleModal('med',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>💊 Medicamento</h3><button class="modal-close" onclick="toggleModal('med',false)">✕</button></div>
+    <input type="text" id="med-name" class="input" placeholder="Nome">
+    <div class="input-row"><input type="date" id="med-start" class="input"><input type="date" id="med-end" class="input"></div>
+    <input type="text" id="med-reason" class="input" placeholder="Motivo">
+    <textarea id="med-notes" class="input" placeholder="Notas..." rows="2"></textarea>
+    <button class="btn-primary" onclick="addMedication()">Salvar</button>
+  </div>
+</div>
+
+<!-- vit -->
+<div id="modal-vit" class="modal-overlay" onclick="if(event.target===this)toggleModal('vit',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>✨ Vitamina</h3><button class="modal-close" onclick="toggleModal('vit',false)">✕</button></div>
+    <input type="text" id="vit-name" class="input" placeholder="Vitamina">
+    <input type="text" id="vit-dose" class="input" placeholder="Dosagem">
+    <input type="text" id="vit-period" class="input" placeholder="Período">
+    <textarea id="vit-notes" class="input" placeholder="Notas..." rows="2"></textarea>
+    <button class="btn-primary" onclick="addVitamin()">Salvar</button>
+  </div>
+</div>
+
+<!-- config -->
+<div id="modal-config" class="modal-overlay" onclick="if(event.target===this)toggleModal('config',false)">
+  <div class="modal-box">
+    <div class="modal-header"><h3>⚙️ Configurações</h3><button class="modal-close" onclick="toggleModal('config',false)">✕</button></div>
+    <div style="font-weight:700;font-size:.85rem;margin-bottom:8px">Seu nome</div>
+    <input id="cfg-name" class="input" style="margin:0" placeholder="Como quer ser chamada?">
+    <button class="btn-primary" onclick="saveCfg()">Salvar</button>
+    <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:16px">
+      <button class="btn-secondary" onclick="exportBackup()">📤 Exportar backup (.json)</button>
+      <button class="btn-secondary" onclick="document.getElementById('file-input').click()">📥 Restaurar backup</button>
+      <input type="file" id="file-input" accept=".json" style="display:none" onchange="importBackup(event)">
+    <div style="margin-top:20px">
+      <div style="font-weight:700;font-size:.85rem;margin-bottom:8px">
+        Backup automático
+      </div>
+
+      <select id="backup-frequency" class="input">
+        <option value="daily">Diário</option>
+        <option value="weekly">Semanal</option>
+        <option value="monthly">Mensal</option>
+      </select>
+
+      <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.85rem">
+        <input type="checkbox" id="backup-enabled">
+        Ativar backup automático
+      </label>
+
+      <button class="btn-primary" onclick="saveBackupConfig()">
+        Salvar backup automático
+      </button>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── STORAGE ──
+const LS={
+  get:(k,d)=>{try{const v=localStorage.getItem('myss_'+k);return v!==null?JSON.parse(v):d;}catch(e){return d;}},
+  set:(k,v)=>localStorage.setItem('myss_'+k,JSON.stringify(v))
+};
+
+// ── DB ──
+let db={
+  checkItems: LS.get('checkItems',[
+    {id:'water',emoji:'💧',name:'Água',type:'count',meta:'8 copos'},
+    {id:'sleep',emoji:'😴',name:'Sono',type:'count',meta:'8h'},
+    {id:'stretch',emoji:'🧘',name:'Alongamento',type:'check',meta:''},
+    {id:'poop',emoji:'💩',name:'Evacuação',type:'check',meta:''},
+    {id:'diet',emoji:'🥗',name:'Alimentação',type:'check',meta:''},
+  ]),
+  checkLog: LS.get('checkLog',{}),
+  cycles: LS.get('cycles',[]),
+  sleepLog: LS.get('sleepLog',[]),
+  sleepReminder: LS.get('sleepReminder',''),
+  medications: LS.get('meds',[]),
+  vitamins: LS.get('vits',[]),
+  reminders: LS.get('reminders',[]),
+  stock: LS.get('stock',[]),
+
+  cfg: LS.get('cfg',{name:''}),
+
+  backupConfig: LS.get('backupConfig',{
+    enabled:false,
+    frequency:'weekly'
+  }),
+};
+function save(k){LS.set(k,db[k]);}
+
+function toggleModal(id,show){document.getElementById('modal-'+id).classList.toggle('active',show);}
+function switchTab(id,el){
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function toast(msg,color='var(--accent)'){
+  const t=document.createElement('div');
+  t.textContent=msg;
+  Object.assign(t.style,{position:'fixed',bottom:'100px',left:'50%',transform:'translateX(-50%)',background:color,color:'#fff',padding:'10px 20px',borderRadius:'16px',fontSize:'.85rem',fontWeight:'700',zIndex:'999',boxShadow:'0 4px 16px rgba(0,0,0,.2)',whiteSpace:'nowrap'});
+  document.body.appendChild(t);setTimeout(()=>t.remove(),2500);
+}
+function fmtDate(d){return new Date(d+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'});}
+function today(){return new Date().toISOString().split('T')[0];}
+
+// ── INSTALL PWA ──
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  document.getElementById('install-banner').style.display='flex';
+  document.getElementById('install-btn').onclick=async()=>{
+    deferredPrompt.prompt();
+    const{outcome}=await deferredPrompt.userChoice;
+    if(outcome==='accepted')document.getElementById('install-banner').style.display='none';
+    deferredPrompt=null;
+  };
+});
+window.addEventListener('appinstalled',()=>{document.getElementById('install-banner').style.display='none';});
+
+// REGISTRO DO SERVICE WORKER (SUBSTITUA TODO O SEU BLOCO POR ESTE)
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE_NAME = 'myss-v${Date.now()}';
+    self.addEventListener('install', e => self.skipWaiting());
+    self.addEventListener('activate', e => {
+      e.waitUntil(clients.claim());
+      caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+    });
+  `;
+
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  
+  navigator.serviceWorker.register(swUrl).then(reg => {
+    reg.update(); // Força o Android a buscar o novo manifesto e ícones
+    
+    reg.onupdatefound = () => {
+      const installingWorker = reg.installing;
+      installingWorker.onstatechange = () => {
+        if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          window.location.reload();
+        }
+      };
+    };
+  }).catch(() => {});
+}
+
+// ── NOTIFICATIONS ──
+async function requestNotif(){
+  if(!('Notification' in window))return false;
+  if(Notification.permission==='granted')return true;
+  const p=await Notification.requestPermission();
+  return p==='granted';
+}
+function sendNotif(title,body,icon='🌸'){
+  if(Notification.permission==='granted')new Notification(title,{body,icon});
+}
+function scheduleNotif(title,body,ts){
+  const delay=ts-Date.now();
+  if(delay>0&&delay<7*24*60*60*1000)setTimeout(()=>sendNotif(title,body),delay);
+}
+
+// ── GREETING ──
+function updateGreeting(){
+  const name=db.cfg.name||'';
+  const h=new Date().getHours();
+  const greet=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
+  document.getElementById('greeting').textContent=`${greet}${name?', '+name:''}! ✨`;
+  if(db.cfg.name)document.getElementById('cfg-name').value=db.cfg.name;
+}
+function saveCfg(){
+  db.cfg.name=document.getElementById('cfg-name').value.trim();
+  save('cfg');updateGreeting();toggleModal('config',false);toast('Salvo!');
+}
+
+// ── CHECKLIST ──
+let currentCheckDate='';
+function initCheck(){
+  const d=today();
+  document.getElementById('check-date').value=d;
+  document.getElementById('check-date').onchange=()=>loadCheckDay();
+  loadCheckDay();renderCheckLog();
+}
+function loadCheckDay(){
+  currentCheckDate=document.getElementById('check-date').value;
+  const dayData=db.checkLog[currentCheckDate]||{};
+  renderCheckList(dayData);
+}
+function renderCheckList(dayData){
+  const el=document.getElementById('check-list');
+  el.innerHTML=db.checkItems.map(item=>{
+    const val=dayData[item.id]||(item.type==='count'?0:false);
+    if(item.type==='count'){
+      return`<div class="check-item">
+        <div class="check-left">
+          <div class="check-emoji">${item.emoji}</div>
+          <div class="check-info">
+            <div class="check-name">${item.name}</div>
+            ${item.meta?`<div class="check-meta">Meta: ${item.meta}</div>`:''}
+          </div>
+        </div>
+        <div class="check-right">
+          <div class="counter-box">
+            <button class="btn-count" onclick="adjustCount('${item.id}',-1)">−</button>
+            <span class="count-val" id="cv-${item.id}">${val}</span>
+            <button class="btn-count" onclick="adjustCount('${item.id}',1)">+</button>
+          </div>
+        </div>
+      </div>`;
+    } else {
+      return`<div class="check-item">
+        <div class="check-left">
+          <div class="check-emoji">${item.emoji}</div>
+          <div class="check-info">
+            <div class="check-name">${item.name}</div>
+            ${item.meta?`<div class="check-meta">Meta: ${item.meta}</div>`:''}
+          </div>
+        </div>
+        <div class="check-right">
+          <button class="toggle ${val?'on':''}" id="tog-${item.id}" onclick="toggleCheck('${item.id}')"></button>
+        </div>
+      </div>`;
+    }
+  }).join('');
+  renderCheckEditList();
+}
+function adjustCount(id,delta){
+  const dayData=db.checkLog[currentCheckDate]||{};
+  dayData[id]=Math.max(0,(dayData[id]||0)+delta);
+  db.checkLog[currentCheckDate]=dayData;
+  document.getElementById('cv-'+id).textContent=dayData[id];
+}
+function toggleCheck(id){
+  const dayData=db.checkLog[currentCheckDate]||{};
+  dayData[id]=!dayData[id];
+  db.checkLog[currentCheckDate]=dayData;
+  const btn=document.getElementById('tog-'+id);
+  if(btn)btn.classList.toggle('on',dayData[id]);
+}
+function saveCheckDay(){
+  save('checkLog');toast('Dia salvo! 💾');renderCheckLog();
+}
+function renderCheckLog(){
+  const el=document.getElementById('check-log');
+  const keys=Object.keys(db.checkLog).sort((a,b)=>b.localeCompare(a)).slice(0,14);
+  if(!keys.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center">Nenhum dia salvo ainda</p>';return;}
+  el.innerHTML=keys.map(dateKey=>{
+    const dayData=db.checkLog[dateKey];
+    const dots=db.checkItems.map(item=>{
+      const v=dayData[item.id];
+      const done=item.type==='count'?(v||0)>0:!!v;
+      return`<div class="cl-dot"><span class="dot ${done?'done':'miss'}">${item.emoji}</span><span>${item.name.slice(0,4)}</span></div>`;
+    }).join('');
+    return`<div class="cl-log-day"><div class="cl-log-date">${fmtDate(dateKey)}</div><div class="cl-dots">${dots}</div></div>`;
+  }).join('');
+}
+function renderCheckEditList(){
+  const el=document.getElementById('check-edit-list');
+  if(!el)return;
+  el.innerHTML=db.checkItems.map((item,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #F1F5F9">
+      <span style="font-size:1.3rem">${item.emoji}</span>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:.9rem">${item.name}</div>
+        <div style="font-size:.75rem;color:var(--muted)">${item.type==='count'?'Contador':'Checkbox'}${item.meta?' · Meta: '+item.meta:''}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+  <button
+    onclick="editCheckItem('${item.id}')"
+    style="color:var(--secondary);font-size:1rem"
+  >
+    ✏️
+  </button>
+
+  <button
+    onclick="removeCheckItem('${item.id}')"
+    style="color:var(--danger);font-size:1.1rem"
+  >
+    🗑
+  </button>
+</div>
+    </div>`).join('');
+}
+function addCheckItem(){
+  const emoji=document.getElementById('new-item-emoji').value.trim()||'⭐';
+  const name=document.getElementById('new-item-name').value.trim();
+  if(!name){toast('Nome obrigatório','#EF4444');return;}
+  const type=document.getElementById('new-item-type').value;
+  const meta=document.getElementById('new-item-meta').value.trim();
+  db.checkItems.push({id:'ci_'+Date.now(),emoji,name,type,meta});
+  save('checkItems');
+  document.getElementById('new-item-name').value='';
+  document.getElementById('new-item-emoji').value='';
+  document.getElementById('new-item-meta').value='';
+  loadCheckDay();toast('Item adicionado!');
+}
+function editCheckItem(id){
+  const item = db.checkItems.find(i=>i.id===id);
+
+  if(!item) return;
+
+  const emoji = prompt('Emoji:', item.emoji);
+  if(emoji === null) return;
+
+  const name = prompt('Nome da tarefa:', item.name);
+  if(name === null || !name.trim()) return;
+
+  const meta = prompt('Meta:', item.meta || '');
+  if(meta === null) return;
+
+  const type = prompt(
+    'Tipo: check ou count',
+    item.type
+  );
+
+  if(type !== 'check' && type !== 'count'){
+    toast('Tipo inválido','#EF4444');
+    return;
+  }
+
+  item.emoji = emoji.trim() || '⭐';
+  item.name = name.trim();
+  item.meta = meta.trim();
+  item.type = type;
+
+  save('checkItems');
+
+  loadCheckDay();
+
+  toast('Item atualizado!');
+}
+function removeCheckItem(id){
+  if(!confirm('Remover este item?'))return;
+  db.checkItems=db.checkItems.filter(i=>i.id!==id);
+  save('checkItems');loadCheckDay();toast('Removido');
+}
+
+// ── CICLO ──
+function initCycle(){
+  document.getElementById('cycle-end-date').value=today();
+  renderCycle();
+}
+function startCycle(){
+  db.cycles.unshift({id:Date.now(),start:today(),end:null,notes:''});
+  save('cycles');renderCycle();toast('Ciclo iniciado! 🩸','#EC4899');
+}
+function endCycle(){
+  const endDate=document.getElementById('cycle-end-date').value;
+  const notes=document.getElementById('cycle-end-notes').value;
+  if(!endDate){toast('Informe a data','#EF4444');return;}
+  const active=db.cycles.find(c=>!c.end);
+  if(active){active.end=endDate;active.notes=notes;}
+  else{db.cycles.unshift({id:Date.now(),start:today(),end:endDate,notes});}
+  save('cycles');renderCycle();toggleModal('cycle-end',false);toast('Fim registrado! ✓');
+}
+function setCustomCycle(){
+  const d=document.getElementById('cycle-custom-date').value;
+  if(!d)return;
+  db.cycles.unshift({id:Date.now(),start:d,end:null,notes:''});
+  save('cycles');renderCycle();toggleModal('cycle-custom',false);toast('Ciclo definido!');
+}
+function renderCycle(){
+  const active=db.cycles.find(c=>!c.end)||db.cycles[0];
+  if(!active){
+    document.getElementById('cycle-day-num').textContent='--';
+    document.getElementById('cycle-info').textContent='Nenhum ciclo registrado';
+    document.getElementById('cycle-phase-badge').innerHTML='';
+  } else {
+    const start=new Date(active.start+'T00:00:00');
+    const diffDays=Math.ceil((new Date().setHours(0,0,0,0)-start)/(1000*60*60*24))+1;
+    document.getElementById('cycle-day-num').textContent=`Dia ${diffDays}`;
+    document.getElementById('cycle-info').textContent=`Início: ${fmtDate(active.start)}${active.end?' · Fim: '+fmtDate(active.end):''}`;
+    // fase
+    let phase='',phaseCls='';
+    if(diffDays<=5){phase='🩸 Menstrual';phaseCls='phase-menstrual';}
+    else if(diffDays<=13){phase='🌱 Folicular';phaseCls='phase-folicular';}
+    else if(diffDays<=16){phase='🥚 Ovulação';phaseCls='phase-ovulacao';}
+    else{phase='🌙 Lútea';phaseCls='phase-lutea';}
+    document.getElementById('cycle-phase-badge').innerHTML=`<span class="cycle-phase ${phaseCls}">${phase}</span>`;
+  }
+  // previsão
+  renderCyclePrediction();
+  // histórico
+  const hEl=document.getElementById('cycle-history');
+  if(!db.cycles.length){hEl.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center">Nenhum ciclo registrado</p>';return;}
+  hEl.innerHTML=db.cycles.map(c=>{
+    const dur=c.end?Math.ceil((new Date(c.end)-new Date(c.start))/(1000*60*60*24)+1)+'d de menstruação':'Em andamento';
+    return`<div class="log-item">
+      <div class="log-header">
+        <span class="log-name">🩸 ${fmtDate(c.start)}</span>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span class="badge ${c.end?'badge-muted':'badge-accent'}">${dur}</span>
+          <button onclick="deleteCycle('${c.id}')" style="color:var(--danger)">🗑</button>
+        </div>
+      </div>
+      ${c.end?`<div class="log-meta">Fim: ${fmtDate(c.end)}</div>`:''}
+      ${c.notes?`<div style="font-size:.8rem;color:var(--muted);margin-top:6px;font-style:italic">${c.notes}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function renderCyclePrediction(){
+  const el=document.getElementById('cycle-prediction');
+  const completed=db.cycles.filter(c=>c.start&&c.end);
+  if(completed.length<2){el.innerHTML='<p style="color:var(--muted);font-size:.85rem">Registre pelo menos 2 ciclos completos para ver a previsão.</p>';return;}
+  // calcular duração média dos ciclos
+  const durations=[];
+  for(let i=0;i<completed.length-1;i++){
+    const a=new Date(completed[i].start);const b=new Date(completed[i+1].start);
+    const d=Math.round(Math.abs(a-b)/(1000*60*60*24));
+    if(d>15&&d<45)durations.push(d);
+  }
+  if(!durations.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem">Dados insuficientes para previsão.</p>';return;}
+  const avgCycle=Math.round(durations.reduce((a,b)=>a+b,0)/durations.length);
+  const lastStart=new Date(completed[0].start+'T00:00:00');
+  const nextStart=new Date(lastStart);nextStart.setDate(lastStart.getDate()+avgCycle);
+  const today2=new Date();today2.setHours(0,0,0,0);
+  const daysUntil=Math.ceil((nextStart-today2)/(1000*60*60*24));
+  const avgMens=Math.round(completed.slice(0,5).reduce((s,c)=>{
+    return s+Math.ceil((new Date(c.end)-new Date(c.start))/(1000*60*60*24)+1);
+  },0)/Math.min(completed.length,5));
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:var(--pink)">${daysUntil>0?daysUntil+'d':'Hoje'}</div>
+        <div style="font-size:.75rem;color:var(--muted);font-weight:600;margin-top:4px">Próximo ciclo</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:2px">${nextStart.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}</div>
+      </div>
+      <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:16px;padding:14px;text-align:center">
+        <div style="font-size:1.8rem;font-weight:800;color:var(--secondary)">${avgCycle}d</div>
+        <div style="font-size:.75rem;color:var(--muted);font-weight:600;margin-top:4px">Duração média</div>
+        <div style="font-size:.7rem;color:var(--muted);margin-top:2px">~${avgMens}d menstruando</div>
+      </div>
+    </div>`;
+}
+function deleteCycle(id){
+  if(!confirm('Remover este ciclo?'))return;
+  db.cycles=db.cycles.filter(c=>String(c.id)!==String(id));
+  save('cycles');renderCycle();
+}
+
+// ── SONO ──
+function initSleep(){
+  document.getElementById('sleep-date').value=today();
+  const rem=db.sleepReminder;
+  if(rem){document.getElementById('sleep-reminder-time').value=rem;document.getElementById('sleep-reminder-badge').textContent=rem;document.getElementById('sleep-reminder-badge').className='badge badge-success';}
+  renderSleepLog();
+}
+function saveSleepEntry(){
+  const sleepT=document.getElementById('sleep-time').value;
+  const wakeT=document.getElementById('wake-time').value;
+  const date=document.getElementById('sleep-date').value;
+  const notes=document.getElementById('sleep-notes').value;
+  if(!sleepT&&!wakeT){toast('Informe ao menos um horário','#EF4444');return;}
+  let dur='';
+  if(sleepT&&wakeT){
+    const [sh,sm]=sleepT.split(':').map(Number);const [wh,wm]=wakeT.split(':').map(Number);
+    let mins=(wh*60+wm)-(sh*60+sm);if(mins<0)mins+=1440;
+    dur=`${Math.floor(mins/60)}h${mins%60?String(mins%60).padStart(2,'0')+'min':''}`;
+  }
+  db.sleepLog.unshift({id:Date.now(),date,sleep:sleepT,wake:wakeT,dur,notes});
+  db.sleepLog=db.sleepLog.slice(0,60);
+  save('sleepLog');renderSleepLog();
+  document.getElementById('sleep-time').value='';document.getElementById('wake-time').value='';document.getElementById('sleep-notes').value='';
+  toast('Sono registrado! 😴');
+}
+function renderSleepLog(){
+  const el=document.getElementById('sleep-log');
+  if(!db.sleepLog.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center">Nenhum registro ainda</p>';return;}
+  el.innerHTML=db.sleepLog.slice(0,14).map(s=>`
+    <div class="sleep-entry">
+      <div>
+        <div class="sleep-date">${fmtDate(s.date)}</div>
+        <div class="sleep-times">${s.sleep?'🌙 '+s.sleep:''}${s.sleep&&s.wake?' → ':''}${s.wake?'☀️ '+s.wake:''}</div>
+        ${s.notes?`<div style="font-size:.75rem;color:var(--muted);font-style:italic;margin-top:2px">${s.notes}</div>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${s.dur?`<span class="sleep-dur">${s.dur}</span>`:''}
+        <button onclick="deleteSleep('${s.id}')" style="color:var(--danger)">🗑</button>
+      </div>
+    </div>`).join('');
+}
+function deleteSleep(id){db.sleepLog=db.sleepLog.filter(s=>String(s.id)!==String(id));save('sleepLog');renderSleepLog();}
+async function saveSleepReminder(){
+  const t=document.getElementById('sleep-reminder-time').value;
+  if(!t){toast('Informe um horário','#EF4444');return;}
+  const ok=await requestNotif();
+  db.sleepReminder=t;save('sleepReminder');
+  document.getElementById('sleep-reminder-badge').textContent=t;
+  document.getElementById('sleep-reminder-badge').className='badge badge-success';
+  scheduleDailySleepReminder(t);
+  toast(ok?'Lembrete ativado! 🔔':'Lembrete salvo (ative as notificações)');
+}
+function scheduleDailySleepReminder(timeStr){
+  const [h,m]=timeStr.split(':').map(Number);
+  const now=new Date();const target=new Date();
+  target.setHours(h,m,0,0);
+  if(target<=now)target.setDate(target.getDate()+1);
+  const delay=target-now;
+  setTimeout(()=>{
+    sendNotif('🌙 Hora de dormir!','Cuide do seu sono. Boa noite! ✨');
+    setInterval(()=>sendNotif('🌙 Hora de dormir!','Cuide do seu sono. Boa noite! ✨'),24*60*60*1000);
+  },delay);
+}
+
+// ── SAÚDE ──
+function renderMedications(){
+  const el=document.getElementById('med-list');
+  if(!db.medications.length){el.innerHTML='<p style="text-align:center;color:var(--muted);font-size:.85rem">Nenhum medicamento</p>';return;}
+  el.innerHTML=db.medications.map(m=>`
+    <div class="log-item" style="border-left:4px solid var(--accent)">
+      <div class="log-header"><span class="log-name">${m.name}</span><button onclick="deleteMed('${m.id}')" style="color:var(--danger)">🗑</button></div>
+      <div class="log-meta">${m.start?'📅 '+fmtDate(m.start):''} ${m.end?'→ '+fmtDate(m.end):''}</div>
+      ${m.reason?`<div style="font-size:.8rem;color:var(--accent);margin-top:4px">Motivo: ${m.reason}</div>`:''}
+      ${m.notes?`<div style="font-size:.8rem;color:var(--muted);font-style:italic;margin-top:6px">${m.notes}</div>`:''}
+    </div>`).join('');
+}
+function addMedication(){
+  db.medications.unshift({id:Date.now().toString(),name:document.getElementById('med-name').value,reason:document.getElementById('med-reason').value,start:document.getElementById('med-start').value,end:document.getElementById('med-end').value,notes:document.getElementById('med-notes').value});
+  save('medications');renderMedications();toggleModal('med',false);toast('Salvo!');
+}
+function deleteMed(id){db.medications=db.medications.filter(m=>m.id!==id);save('medications');renderMedications();}
+
+function renderVitamins(){
+  const el=document.getElementById('vit-list');
+  if(!db.vitamins.length){el.innerHTML='<p style="text-align:center;color:var(--muted);font-size:.85rem">Nenhuma vitamina</p>';return;}
+  el.innerHTML=db.vitamins.map(v=>`
+    <div class="log-item" style="border-left:4px solid var(--secondary)">
+      <div class="log-header"><span class="log-name">${v.name} (${v.dose})</span><button onclick="deleteVit('${v.id}')" style="color:var(--danger)">🗑</button></div>
+      <div style="font-size:.8rem;color:var(--secondary)">${v.period}</div>
+    </div>`).join('');
+}
+function addVitamin(){
+  db.vitamins.unshift({id:Date.now().toString(),name:document.getElementById('vit-name').value,dose:document.getElementById('vit-dose').value,period:document.getElementById('vit-period').value,notes:document.getElementById('vit-notes').value});
+  save('vitamins');renderVitamins();toggleModal('vit',false);toast('Salvo!');
+}
+function deleteVit(id){db.vitamins=db.vitamins.filter(v=>v.id!==id);save('vitamins');renderVitamins();}
+
+// ── LEMBRETES ──
+async function addReminder(){
+  const title=document.getElementById('rem-title').value.trim();
+  const date=document.getElementById('rem-date').value;
+  if(!title||!date){toast('Preencha título e data','#EF4444');return;}
+  const id=Date.now().toString();
+  db.reminders.push({id,title,date});
+  save('reminders');renderReminders();
+  document.getElementById('rem-title').value='';document.getElementById('rem-date').value='';
+  const ok=await requestNotif();
+  if(ok)scheduleNotif('🔔 '+title,'Lembrete MySS',new Date(date).getTime());
+  toast('Lembrete criado! 🔔');
+}
+function renderReminders(){
+  const el=document.getElementById('reminders-list');
+  if(!db.reminders.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center">Nenhum lembrete</p>';return;}
+  const now=Date.now();
+  const sorted=[...db.reminders].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  el.innerHTML=sorted.map(r=>{
+    const ts=new Date(r.date).getTime();const past=ts<now;
+    return`<div class="list-item" style="${past?'opacity:.6':''}">
+      <div>
+        <strong>${r.title}</strong>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:2px">${new Date(r.date).toLocaleString('pt-BR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        ${past?'<span class="badge badge-muted">passou</span>':''}
+        <button onclick="deleteReminder('${r.id}')" style="color:var(--danger)">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function deleteReminder(id){db.reminders=db.reminders.filter(r=>r.id!==id);save('reminders');renderReminders();}
+
+// ── ESTOQUE ──
+function addStockItem(){
+  const name=document.getElementById('stock-name').value.trim();
+  if(!name){toast('Nome obrigatório','#EF4444');return;}
+  const urgent=document.getElementById('stock-urgent').checked;
+  const status=document.getElementById('stock-status').value;
+  const expire=document.getElementById('stock-expire').value;
+  db.stock.push({id:Date.now().toString(),name,status,urgent,expire});
+  save('stock');renderStock();renderStockAlerts();
+  document.getElementById('stock-name').value='';document.getElementById('stock-urgent').checked=false;document.getElementById('stock-expire').value='';
+  if(urgent){
+    requestNotif().then(ok=>{if(ok)sendNotif('🚨 Item urgente no estoque!',`${name} precisa de atenção urgente.`);});
+  }
+  toast('Item adicionado!');
+}
+function renderStock(){
+  const el=document.getElementById('stock-list');
+  if(!db.stock.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem;text-align:center">Estoque vazio</p>';return;}
+  // urgentes primeiro
+  const sorted=[...db.stock].sort((a,b)=>(b.urgent?1:0)-(a.urgent?1:0));
+  el.innerHTML=sorted.map(i=>{
+    const statusBadge={ok:'badge-success',baixo:'badge-warning',acabou:'badge-danger'}[i.status]||'badge-muted';
+    const statusLabel={ok:'✅ Ok',baixo:'⚠️ Baixo',acabou:'❌ Acabou'}[i.status]||i.status;
+    const expireWarning=i.expire&&new Date(i.expire)<new Date()?'<span class="badge badge-danger">Vencido</span>':'';
+    return`<div class="stock-item ${i.urgent?'urgent':''}">
+      <div class="stock-left">
+        ${i.urgent?'<span style="font-size:1.2rem">🚨</span>':''}
+        <div class="stock-info">
+          <div class="stock-name">${i.name}</div>
+          <div class="stock-meta">${i.expire?'📅 Val: '+fmtDate(i.expire):''}${expireWarning}</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <select onchange="updateStockStatus('${i.id}',this.value)" class="input" style="margin:0;padding:6px 8px;font-size:.75rem;width:auto">
+          <option value="ok" ${i.status==='ok'?'selected':''}>✅ Ok</option>
+          <option value="baixo" ${i.status==='baixo'?'selected':''}>⚠️ Baixo</option>
+          <option value="acabou" ${i.status==='acabou'?'selected':''}>❌ Acabou</option>
+        </select>
+        <button onclick="deleteStockItem('${i.id}')" style="color:var(--danger)">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function updateStockStatus(id,status){
+  const item=db.stock.find(i=>i.id===id);if(item){item.status=status;save('stock');renderStockAlerts();}
+}
+function deleteStockItem(id){db.stock=db.stock.filter(i=>i.id!==id);save('stock');renderStock();renderStockAlerts();}
+function renderStockAlerts(){
+  const urgent=db.stock.filter(i=>i.urgent||i.status==='acabou'||i.status==='baixo');
+  const el=document.getElementById('stock-alerts');
+  if(!urgent.length){el.innerHTML='';return;}
+  el.innerHTML=urgent.map(i=>`
+    <div class="alert-banner">
+      🚨 <span><strong>${i.name}</strong> — ${i.status==='acabou'?'acabou':i.status==='baixo'?'estoque baixo':'item urgente'}</span>
+    </div>`).join('');
+}
+
+// ── BACKUP ──
+function generateBackupData(){
+  return {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    data: db
+  };
+}
+
+function exportBackup(auto = false){
+  try{
+    const backupData = generateBackupData();
+
+    const blob = new Blob(
+      [JSON.stringify(backupData, null, 2)],
+      { type:'application/json' }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+
+    const fileName = auto
+      ? `MySS_AutoBackup_${today()}.json`
+      : `MySS_Backup_${today()}.json`;
+
+    a.download = fileName;
+
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(()=>{
+      URL.revokeObjectURL(url);
+      a.remove();
+    },100);
+
+    if(!auto){
+      toast('Backup exportado!');
+    }
+
+  }catch(err){
+    console.error(err);
+    toast('Erro ao exportar backup','#EF4444');
+  }
+}
+
+function importBackup(e){
+  const file = e.target.files[0];
+
+  if(!file){
+    toast('Arquivo inválido','#EF4444');
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = ev => {
+    try{
+      const parsed = JSON.parse(ev.target.result);
+
+      const importedData = parsed.data || parsed;
+
+      db = importedData;
+
+      Object.keys(db).forEach(k=>{
+        LS.set(k, db[k]);
+      });
+
+      toast('Backup restaurado!');
+
+      setTimeout(()=>{
+        location.reload();
+      },1000);
+
+    }catch(err){
+      console.error(err);
+      toast('Arquivo de backup inválido','#EF4444');
+    }
+  };
+
+  reader.readAsText(file);
+}
+
+function shouldRunAutoBackup(){
+  const cfg = db.backupConfig;
+
+  if(!cfg.enabled) return false;
+
+  const last = LS.get('lastAutoBackup', null);
+
+  if(!last) return true;
+
+  const now = new Date();
+  const lastDate = new Date(last);
+
+  const diffDays = Math.floor(
+    (now - lastDate) / (1000*60*60*24)
+  );
+
+  if(cfg.frequency === 'daily'){
+    return diffDays >= 1;
+  }
+
+  if(cfg.frequency === 'weekly'){
+    return diffDays >= 7;
+  }
+
+  if(cfg.frequency === 'monthly'){
+    return diffDays >= 30;
+  }
+
+  return false;
+}
+
+function runAutoBackup(){
+  if(shouldRunAutoBackup()){
+    exportBackup(true);
+    LS.set('lastAutoBackup', new Date().toISOString());
+  }
+}
+
+function saveBackupConfig(){
+  db.backupConfig = {
+    enabled: document.getElementById('backup-enabled').checked,
+    frequency: document.getElementById('backup-frequency').value
+  };
+
+  save('backupConfig');
+
+  toast('Configuração salva!');
+}
+
+// ── INIT ──
+window.onload=()=>{
+  updateGreeting();
+  initCheck();
+  initCycle();
+  initSleep();
+  renderMedications();
+  renderVitamins();
+  renderReminders();
+  renderStock();
+  renderStockAlerts();
+
+  if(db.sleepReminder){
+    scheduleDailySleepReminder(db.sleepReminder);
+  }
+
+  const backupEnabled = document.getElementById('backup-enabled');
+  const backupFrequency = document.getElementById('backup-frequency');
+
+  if(backupEnabled && backupFrequency){
+    backupEnabled.checked = db.backupConfig.enabled;
+    backupFrequency.value = db.backupConfig.frequency;
+  }
+
+  runAutoBackup();
+
+  requestNotif().then(ok=>{
+    if(ok){
+      db.reminders.forEach(r=>{
+        const ts=new Date(r.date).getTime();
+
+        if(ts>Date.now()){
+          scheduleNotif('🔔 '+r.title,'Lembrete MySS',ts);
+        }
+      });
+    }
+  });
+};
+</script>
+</body>
+</html>
